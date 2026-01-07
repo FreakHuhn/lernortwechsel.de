@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Netzwerktechnikprojekt</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="kicker">Beispielprojekt</div>
+    <h1>Netzwerktechnikprojekt</h1>
+    <div class="subtitle">
+      Eine Beispieloberflaeche mit Reitern fuer Status, Planung und Dokumentation.
+      Die Inhalte sind Platzhalter und zeigen nur die Struktur.
+    </div>
+  </header>
+
+  <section class="shell" role="tablist" aria-label="Projektbereiche">
+    <div class="tabs">
+      <button class="tab" role="tab" aria-selected="true" data-tab="overview">Uebersicht</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="design">Design</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="rollout">Rollout</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="docs">Dokumente</button>
+    </div>
+    <div class="content" id="tab-content">
+      <div class="panel">
+        <div class="tag"><span class="pulse"></span>Live Status</div>
+        <h2>Netzwerk-Check in Arbeit</h2>
+        <p>
+          Beispieltext: Gesamtstruktur erfassen, VLAN-Plan pruefen, Monitoring definieren.
+        </p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <strong>Switches</strong>
+          <p>Inventarisiert: 12/14</p>
+        </div>
+        <div class="card">
+          <strong>Access Points</strong>
+          <p>Bereit fuer Test: 6/6</p>
+        </div>
+        <div class="card">
+          <strong>Firewall</strong>
+          <p>Regelwerk Entwurf v2</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    Tipp: Dies ist nur ein Beispiel. Du kannst weitere Reiter, Farben oder Inhalte ergaenzen.
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll(".tab");
+    const content = document.getElementById("tab-content");
+
+    const templates = {
+      overview: `
+        <div class="panel">
+          <div class="tag"><span class="pulse"></span>Live Status</div>
+          <h2>Netzwerk-Check in Arbeit</h2>
+          <p>Beispieltext: Gesamtstruktur erfassen, VLAN-Plan pruefen, Monitoring definieren.</p>
+        </div>
+        <div class="cards">
+          <div class="card"><strong>Switches</strong><p>Inventarisiert: 12/14</p></div>
+          <div class="card"><strong>Access Points</strong><p>Bereit fuer Test: 6/6</p></div>
+          <div class="card"><strong>Firewall</strong><p>Regelwerk Entwurf v2</p></div>
+        </div>
+      `,
+      design: `
+        <div class="panel">
+          <h2>Design-Plan</h2>
+          <p>Beispieltext: IP-Adressierung, Segmentierung, Namenskonzept, Redundanz.</p>
+        </div>
+        <div class="cards">
+          <div class="card"><strong>IP-Plan</strong><p>Entwurf 10.20.0.0/16</p></div>
+          <div class="card"><strong>VLANs</strong><p>Office, Lab, Gast, IoT</p></div>
+          <div class="card"><strong>QoS</strong><p>Prioritaeten fuer VoIP</p></div>
+        </div>
+      `,
+      rollout: `
+        <div class="panel">
+          <h2>Rollout</h2>
+          <p>Beispieltext: Wartungsfenster, Backup, Schritt-fuer-Schritt Uebernahme.</p>
+        </div>
+        <div class="cards">
+          <div class="card"><strong>Phase 1</strong><p>Core Switches</p></div>
+          <div class="card"><strong>Phase 2</strong><p>Access Layer</p></div>
+          <div class="card"><strong>Phase 3</strong><p>Security & Monitoring</p></div>
+        </div>
+      `,
+      docs: `
+        <div class="panel">
+          <h2>Dokumente</h2>
+          <p>Beispieltext: Standards, Checklisten, Notfallplaene.</p>
+        </div>
+        <div class="cards">
+          <div class="card"><strong>Topologie</strong><p>Netzwerk-Karte v1</p></div>
+          <div class="card"><strong>Monitoring</strong><p>Dashboard Entwurf</p></div>
+          <div class="card"><strong>Change Log</strong><p>Vorlage bereit</p></div>
+        </div>
+      `,
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+        tab.setAttribute("aria-selected", "true");
+        const key = tab.dataset.tab;
+        content.innerHTML = templates[key] || "";
+        content.style.animation = "none";
+        requestAnimationFrame(() => {
+          content.style.animation = "";
+        });
+      });
+    });
+  </script>
+</body>
+</html>
