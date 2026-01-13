@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/png" href="./img/logo.png">
+    <title>Einloggen - Net IT</title>
+</head>
+
+<!-- Navbar -->
+<header>
+    <div class="container">
+    <div class="nav">
+        <a class="brand" href="#" onclick="goHome(); return false;">
+        <span class="logo"><img src="./img/logo.png" alt="Net IT GmbH Logo"></span>
+        <span class="name">
+            <strong>Net IT <span>GmbH</span></strong>
+            <small>IT-Systemhaus</small>
+        </span>
+        </a>
+
+        <div class="navlinks">
+        <a href="#leistungen">Leistungen</a>
+        <a href="#vorteile">Warum wir</a>
+        <a href="#kontakt">Kontakt</a>
+        <a class="btn primary" href="#kontakt"><i data-lucide="sparkles"></i> Angebot anfragen</a>
+        <a class="btn primary" href="login.html">Einloggen</a>
+        </div>
+
+        <button class="mobileBtn" id="mobileBtn" aria-label="Menü öffnen">
+        <i data-lucide="menu"></i>
+        </button>
+    </div>
+    </div>
+
+    <div class="mobileMenu" id="mobileMenu">
+    <div class="container">
+        <a href="#leistungen">Leistungen</a>
+        <a href="#vorteile">Warum wir</a>
+        <a href="#kontakt">Kontakt</a>
+        <a class="btn primary cta" href="#kontakt"><i data-lucide="sparkles"></i> Angebot anfragen</a>
+    </div>
+    </div>
+</header>
+
+<!-- MAIN -->
+
+<body>
+    <form action="https://webmail.lernortwechsel.com/SOGo/so" method="post" style="max-width: 400px; margin: auto;">
+    <h2>Einloggen</h2>
+    <p>Geben Sie Ihre Anmeldedaten ein.</p>
+    
+    <label for="userName">E-Mail:</label>
+    <input type="text" id="userName" name="userName" placeholder="deinUser@lernortwechsel.com" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+    
+    <label for="password">Passwort:</label>
+    <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+    
+    <!-- Optional: Denken Sie daran, sich 1 Tag lang einzuloggen. -->
+    <input type="hidden" name="rememberLogin" value="1">
+    
+    <!-- Opcional: Si usas multi-dominio en Mailcow, agrega esto -->
+    <!-- <input type="hidden" name="domain" value="lernortwechsel.com"> -->
+    
+    <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none;">Einloggen</button>
+</form>
+</body>
+</html>
+
