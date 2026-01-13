@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+  <header>
+    <div class="container">
+      <div class="nav">
+        <a class="brand" href="index.html">
+          <span class="logo"><img src="./img/logo.png" alt="Net IT GmbH Logo"></span>
+          <span class="name">
+            <strong>Net IT <span>GmbH</span></strong>
+            <small>IT-Systemhaus</small>
+          </span>
+        </a>
+
+        <div class="navlinks">
+          <a href="#leistungen">Leistungen</a>
+          <a href="#vorteile">Warum wir</a>
+          <a href="#kontakt">Kontakt</a>
+          <a class="btn primary" href="#kontakt"><i data-lucide="sparkles"></i> Angebot anfragen</a>
+          <a class="btn primary" href="login.html">Einloggen</a>
+        </div>
+
+        <button class="mobileBtn" id="mobileBtn" aria-label="Menü öffnen">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobileMenu" id="mobileMenu">
+      <div class="container">
+        <a href="#leistungen">Leistungen</a>
+        <a href="#vorteile">Warum wir</a>
+        <a href="#kontakt">Kontakt</a>
+        <a class="btn primary cta" href="#kontakt"><i data-lucide="sparkles"></i> Angebot anfragen</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="datenschutzPage" class="page legal" aria-label="Datenschutz">
+    <div class="container sectionPad">
+      <a class="crumb" href="index.html">
+        <i data-lucide="arrow-left"></i> Zurück
+      </a>
+
+      <h2>Datenschutz</h2>
+      <p class="sectionLead">Datenschutzerklärung</p>
+
+      <div class="heroPanel card">
+        <p><strong>1. Verantwortlicher</strong><br>
+          Net IT GmbH, Musterstraße 1, 12345 Musterstadt<br>
+          E-Mail: kontakt@netit-gmbh.de
+        </p>
+
+        <p><strong>2. Allgemeine Hinweise</strong><br>
+          Wir nehmen den Schutz Ihrer personenbezogenen Daten ernst. Personenbezogene Daten werden vertraulich und entsprechend
+          der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung behandelt.
+        </p>
+
+        <p><strong>3. Server-Logfiles</strong><br>
+          Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten Server-Logfiles, die Ihr Browser
+          automatisch übermittelt. Dies können sein: Browsertyp/-version, verwendetes Betriebssystem, Referrer URL, Hostname des
+          zugreifenden Rechners, Uhrzeit der Serveranfrage, IP-Adresse. Eine Zusammenführung dieser Daten mit anderen Datenquellen
+          wird nicht vorgenommen.
+        </p>
+
+        <p><strong>4. Kontaktaufnahme</strong><br>
+          Wenn Sie uns per Formular kontaktieren, werden Ihre Angaben aus dem Formular zur Bearbeitung der Anfrage gespeichert.
+          Hinweis: In dieser Demo-Version wird das Formular nicht wirklich versendet; es erfolgt keine tatsächliche Übermittlung.
+        </p>
+
+        <p><strong>5. Ihre Rechte</strong><br>
+          Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch.
+          Außerdem haben Sie ein Beschwerderecht bei einer Datenschutzaufsichtsbehörde.
+        </p>
+
+        <p><strong>6. SSL-/TLS-Verschlüsselung</strong><br>
+          Diese Seite nutzt aus Sicherheitsgründen eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie am
+          „https://“ und am Schloss-Symbol in der Browserzeile.
+        </p>
+
+        <p class="mutedLine">
+          Hinweis: Das ist ein generischer Mustertext. Für einen echten Einsatz solltest du die Inhalte aus einem Generator (z.B.
+          eRecht24 / Datenschutz-Generator deines Anbieters) übernehmen und an eure Tools (Analytics, Cookies, Newsletter, etc.) anpassen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer">
+      <div class="footTop">
+        <div class="brand" style="gap:12px;">
+          <span class="logo"><img src="./img/logo.png" alt="Net IT GmbH Logo"></span>
+          <span class="name">
+            <strong>Net IT GmbH</strong>
+            <small>IT-Systemhaus • Server • Netzwerk • Security</small>
+          </span>
+        </div>
+
+        <div class="footLinks">
+          <a href="#leistungen">Leistungen</a>
+          <a href="#vorteile">Warum wir</a>
+          <a href="#kontakt">Kontakt</a>
+          <a href="impressum.html">Impressum</a>
+          <a href="datenschutz.html">Datenschutz</a>
+        </div>
+      </div>
+
+      <div class="footBottom">
+        <p style="margin:0;">© <span id="year"></span> Net IT GmbH. Alle Rechte vorbehalten.</p>
+        <div class="meta">
+          <span><i data-lucide="map-pin"></i> Deutschland</span>
+          <span><i data-lucide="clock"></i> Mo–Fr, 9–17 Uhr</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+    
+</body>
+</html>

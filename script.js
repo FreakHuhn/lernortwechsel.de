@@ -63,4 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
     }
 
+    document.querySelectorAll('.panelItem[data-link]').forEach(item => {
+    item.addEventListener('click', () => {
+      window.location.href = item.dataset.link;
+    });
+  });
+
 });
