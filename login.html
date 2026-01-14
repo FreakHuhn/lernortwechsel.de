@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="script.js"></script>
     <link rel="icon" type="image/png" href="./img/logo.png">
     <title>Einloggen - Net IT</title>
@@ -52,23 +53,23 @@
 <!-- MAIN -->
 
 <body>
-    <form action="https://webmail.lernortwechsel.com/SOGo/so" method="post" style="max-width: 400px; margin: auto;">
-    <h2>Einloggen</h2>
-    <p>Geben Sie Ihre Anmeldedaten ein.</p>
-    
-    <label for="userName">E-Mail:</label>
-    <input type="text" id="userName" name="userName" placeholder="deinUser@lernortwechsel.com" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-    
-    <label for="password">Passwort:</label>
-    <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-    
-    <!-- Optional: Denken Sie daran, sich 1 Tag lang einzuloggen. -->
-    <input type="hidden" name="rememberLogin" value="1">
-    
-    <!-- Opcional: Si usas multi-dominio en Mailcow, agrega esto -->
-    <!-- <input type="hidden" name="domain" value="lernortwechsel.com"> -->
-    
-    <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none;">Einloggen</button>
+    <div class="heroPanel" style="margin: 5em">
+        <form action="http://mail.lernortwechsel.de" method="post">
+        <h2>Einloggen</h2>
+        <p>Geben Sie Ihre Anmeldedaten ein</p>
+        
+        <label for="userName">E-Mail:</label>
+        <input type="text" id="userName" name="userName" placeholder="username@lernortwechsel.com" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+        
+        <label for="password">Passwort:</label>
+        <input type="password" id="password" name="password" placeholder="********" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+        
+        <!-- Optional: Denken Sie daran, sich 1 Tag lang einzuloggen. -->
+        <input type="hidden" name="rememberLogin" value="1">
+        
+        <!-- <input type="hidden" name="domain" value="lernortwechsel.de"> -->
+        <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none;">Einloggen</button>
+    </div>
 </form>
 </body>
 </html>
