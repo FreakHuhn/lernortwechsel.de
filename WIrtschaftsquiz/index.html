@@ -1,0 +1,3299 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wirtschaftsquiz</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Wirtschaftsquiz</div>
+    <div class="status">
+      <div class="mode" id="mode">Start</div>
+      <div class="profile">
+        <label for="profile-select">Profil</label>
+        <select id="profile-select"></select>
+      </div>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="card screen" id="start-screen">
+      <h1>Willkommen zum Wirtschaftsquiz</h1>
+      <p class="lead">
+        Starte ein Quiz mit 30 zufaelligen Fragen, uebe haeufig falsche Fragen
+        oder sieh dir deine Auswertung an.
+      </p>
+      <div class="menu">
+        <button class="menu-btn" id="start-quiz">Quiz starten (Alles)</button>
+        <button class="menu-btn secondary" id="resume-quiz" disabled>Quiz fortsetzen</button>
+        <button class="menu-btn secondary" id="open-report">Auswertungen</button>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Uebungsfilter</div>
+        <label class="check">
+          <input type="radio" name="practice-filter" id="filter-all" checked />
+          <span>Alles</span>
+        </label>
+        <label class="check">
+          <input type="radio" name="practice-filter" id="filter-wrong" />
+          <span>Nur falsch beantwortete</span>
+        </label>
+        <label class="check">
+          <input type="radio" name="practice-filter" id="filter-never" />
+          <span>Nur nie beantwortete</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="card screen hidden" id="quiz-screen">
+      <div class="progress" id="progress">0 / 0</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+      <h1 id="question">Fragen werden geladen.</h1>
+      <div class="answers" id="answers"></div>
+      <div class="notes">
+        <label for="note-input">Notizen</label>
+        <textarea id="note-input" placeholder="Eigene Notizen zur Frage..."></textarea>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="actions">
+        <button class="ghost" id="exit-quiz">Zur Startseite</button>
+        <button id="next" disabled>Weiter</button>
+      </div>
+    </section>
+
+    <section class="card screen hidden" id="report-screen">
+      <h1>Auswertungen</h1>
+      <p class="lead" id="report-summary"></p>
+      <div class="report-top">
+        <button class="ghost" id="back-to-menu-top">Zur Startseite</button>
+        <div class="pager" id="report-pager-top">
+          <button class="ghost" id="report-prev-top">Zurueck</button>
+          <span class="pager-info" id="report-page-info-top">Seite 1 / 1</span>
+          <button class="ghost" id="report-next-top">Weiter</button>
+        </div>
+      </div>
+      <div class="report-controls">
+        <div class="filter-group" id="report-mode-filters">
+          <button class="filter-btn active" data-mode="all">Alle Modi</button>
+          <button class="filter-btn" data-mode="quiz">Quiz</button>
+          <button class="filter-btn" data-mode="practice">Uebung</button>
+        </div>
+        <div class="filter-group" id="report-filters">
+          <button class="filter-btn active" data-filter="all">Alle</button>
+          <button class="filter-btn" data-filter="correct">Nur richtig</button>
+          <button class="filter-btn" data-filter="wrong">Nur falsch</button>
+          <button class="filter-btn" data-filter="often">Oft falsch</button>
+          <button class="filter-btn" data-filter="never">Nie beantwortet</button>
+        </div>
+        <div class="report-actions">
+          <button class="ghost" id="export-stats">Export</button>
+          <button class="ghost" id="import-stats">Import</button>
+          <button class="ghost danger" id="reset-stats">Reset</button>
+          <input class="file-input" type="file" id="import-file" accept="application/json" />
+        </div>
+      </div>
+      <div class="report-list" id="report-list"></div>
+      <div class="report-bottom">
+        <div class="pager" id="report-pager-bottom">
+          <button class="ghost" id="report-prev-bottom">Zurueck</button>
+          <span class="pager-info" id="report-page-info-bottom">Seite 1 / 1</span>
+          <button class="ghost" id="report-next-bottom">Weiter</button>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="ghost" id="back-to-menu">Zur Startseite</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    window.QUESTIONS_DATA = {
+  "source": "Foto_01.json - Foto_40.json",
+  "questions": [
+    {
+      "question": "Was ist keine Aufgabe des Ausbildenden?",
+      "type": "single",
+      "answers": [
+        "Ausbildung planvoll durchfuehren",
+        "Fuersorgepflicht wahrnehmen",
+        "Europass ausfuellen",
+        "Ausbildungsmittel kostenlos bereitstellen",
+        "Berichtsheft kontrollieren"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wer darf eine Prokura erteilen?",
+      "type": "single",
+      "answers": [
+        "Ein Kaufmann",
+        "Ein Prokurist",
+        "Ein Geschaeftsfuehrer",
+        "Ein Auszubildender",
+        "Ein Handlungsbevollmaechtigter"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Pflicht hat der Auszubildende laut Berufsbildungsgesetz?",
+      "type": "single",
+      "answers": [
+        "Teilnahme an Ausbildungsmassnahmen",
+        "Ausbildungsnachweise fuehren",
+        "Weisungen befolgen",
+        "Berufsschule besuchen",
+        "Arbeitsvertraege unterschreiben"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Beduerfnisse zaehlen zu den Grundbeduerfnissen?",
+      "type": "single",
+      "answers": [
+        "Sicherheit",
+        "Nahrung",
+        "Wohnung",
+        "Selbstverwirklichung",
+        "Reisen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was versteht man unter dem oekonomischen Prinzip?",
+      "type": "single",
+      "answers": [
+        "Minimalprinzip",
+        "Maximalprinzip",
+        "Gewinnmaximierung um jeden Preis",
+        "Unbegrenzte Beduerfnisbefriedigung",
+        "Planwirtschaftliches Denken"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Angaben muessen im Ausbildungsvertrag stehen?",
+      "type": "single",
+      "answers": [
+        "Beginn und Dauer der Ausbildung",
+        "Dauer der Probezeit",
+        "Ausbildungsverguetung",
+        "Urlaubsanspruch",
+        "Hobbys des Auszubildenden"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer ist laut HGB Kaufmann?",
+      "type": "single",
+      "answers": [
+        "Wer ein Handelsgewerbe betreibt",
+        "Jeder Selbststaendige",
+        "Jeder Handwerker",
+        "Wer im Handelsregister steht",
+        "Jeder Freiberufler"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Pflichten hat der Ausbildende?",
+      "type": "multi",
+      "answers": [
+        "Ausbildungsmittel kostenlos bereitstellen",
+        "Berichtsheft kontrollieren",
+        "Fuersorgepflicht",
+        "Ausbildung planvoll gestalten",
+        "Schulnoten verbessern"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was ist ein Ziel der sozialen Marktwirtschaft?",
+      "type": "multi",
+      "answers": [
+        "Soziale Sicherheit",
+        "Wettbewerb",
+        "Zentralverwaltungswirtschaft",
+        "Planwirtschaft",
+        "Marktfreiheit"
+      ],
+      "solution": [
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "question": "Was gehoert zu den Produktionsfaktoren?",
+      "type": "multi",
+      "answers": [
+        "Arbeit",
+        "Boden",
+        "Kapital",
+        "Wissen",
+        "Konsum"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Was ist ein Beispiel fuer ein freies Gut?",
+      "type": "single",
+      "answers": [
+        "Luft",
+        "Auto",
+        "Haus",
+        "Kleidung",
+        "Strom"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Ziel der Wirtschaftspolitik?",
+      "type": "multi",
+      "answers": [
+        "Preisstabilitaet",
+        "Vollbeschaeftigung",
+        "Aussenwirtschaftliches Gleichgewicht",
+        "Wirtschaftswachstum",
+        "Steuererhoehung"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Welche Rechte hat ein Auszubildender?",
+      "type": "multi",
+      "answers": [
+        "Ausbildung nach Ausbildungsrahmenplan",
+        "Kostenlose Ausbildungsmittel",
+        "Angemessene Verguetung",
+        "Urlaub",
+        "Chef bestimmen"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was gehoert zur dualen Ausbildung?",
+      "type": "multi",
+      "answers": [
+        "Betrieb",
+        "Berufsschule",
+        "Universitaet",
+        "Weiterbildungstraeger",
+        "Industrie- und Handelskammer"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Wofuer ist der Europass gedacht?",
+      "type": "single",
+      "answers": [
+        "Internationale Bewerbung",
+        "Nachweis beruflicher Kompetenzen",
+        "Sozialversicherung",
+        "Steuererklaerung",
+        "Urlaubsantrag"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was sind wirtschaftliche Gueter?",
+      "type": "multi",
+      "answers": [
+        "Autos",
+        "Lebensmittel",
+        "Maschinen",
+        "Software",
+        "Luft"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Welche Aussage zur Berufsschule ist richtig?",
+      "type": "single",
+      "answers": [
+        "Sie vermittelt theoretisches Wissen zur Ausbildung",
+        "Sie ist freiwillig",
+        "Sie ersetzt die betriebliche Ausbildung",
+        "Der Betrieb kann sie verbieten",
+        "Der Unterricht findet nur am Wochenende statt"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist eine Pflicht des Ausbildenden?",
+      "type": "multi",
+      "answers": [
+        "Uebertragung geeigneter Aufgaben",
+        "Urlaub verweigern",
+        "Berichtsheft schreiben",
+        "Ausbildungsmittel bereitstellen",
+        "Beurteilungen verweigern"
+      ],
+      "solution": [
+        1,
+        4
+      ]
+    },
+    {
+      "question": "Was ist eine Pflicht des Auszubildenden?",
+      "type": "multi",
+      "answers": [
+        "Sorgfaltspflicht",
+        "Schweigepflicht",
+        "Weisungen befolgen",
+        "Vorgesetzte ueberwachen",
+        "Kunden akquirieren"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Welche Inhalte gehoeren nicht ins Berichtsheft?",
+      "type": "single",
+      "answers": [
+        "Ausbildungsinhalte",
+        "Taetigkeiten",
+        "Private Erlebnisse",
+        "Schulunterricht",
+        "Lehrgespraeche"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist eine Aufgabe des Betriebsrats?",
+      "type": "multi",
+      "answers": [
+        "Mitbestimmung bei Einstellungen",
+        "Leitung des Unternehmens",
+        "Ueberwachung der Einhaltung von Gesetzen",
+        "Festlegen der Arbeitszeiten allein",
+        "Kontrolle privater Gespraeche"
+      ],
+      "solution": [
+        1,
+        3
+      ]
+    },
+    {
+      "question": "Was ist ein Ziel der staatlichen Wirtschaftspolitik?",
+      "type": "multi",
+      "answers": [
+        "Preisniveaustabilitaet",
+        "Gerechte Einkommensverteilung",
+        "Planwirtschaft",
+        "Monopolbildung",
+        "Arbeitsplatzabbau"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Aussage zur Prokura ist korrekt?",
+      "type": "multi",
+      "answers": [
+        "Sie muss ins Handelsregister eingetragen werden",
+        "Sie kann muendlich erteilt werden",
+        "Sie berechtigt zu allen gerichtlichen und aussergerichtlichen Geschaeften",
+        "Sie darf an Dritte weitergegeben werden",
+        "Sie ist nur in der Ausbildung erlaubt"
+      ],
+      "solution": [
+        1,
+        3
+      ]
+    },
+    {
+      "question": "Was ist ein Merkmal wirtschaftlichen Handelns?",
+      "type": "multi",
+      "answers": [
+        "Knappheit der Gueter",
+        "Zielgerichtetheit",
+        "Beduerfnisbefriedigung",
+        "Beliebigkeit",
+        "Zeitverschwendung"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Was versteht man unter dem Minimalprinzip?",
+      "type": "single",
+      "answers": [
+        "Ein Ziel mit minimalem Aufwand erreichen",
+        "Moeglichst viel produzieren",
+        "Moeglichst wenig arbeiten",
+        "Maximale Kosten verursachen",
+        "Moeglichst viele Gueter verschenken"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was gehoert zu den Rechten des Arbeitgebers?",
+      "type": "multi",
+      "answers": [
+        "Direktionsrecht",
+        "Kontrolle der Arbeitsleistung",
+        "Zwang zu Ueberstunden ohne Regelung",
+        "Urlaub verweigern ohne Grund",
+        "Lohn kuerzen bei guter Leistung"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Was ist keine Art von Guetern?",
+      "type": "single",
+      "answers": [
+        "Konsumgueter",
+        "Investitionsgueter",
+        "immaterielle Gueter",
+        "fiktive Gueter",
+        "freie Gueter"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Welche Aussage zum Ausbildungsnachweis ist korrekt?",
+      "type": "multi",
+      "answers": [
+        "Muss regelmaessig gefuehrt werden",
+        "Ist Zulassungsvoraussetzung zur Pruefung",
+        "Wird vom Berufsschullehrer geschrieben",
+        "Wird vom Arbeitgeber verwahrt",
+        "Muss nicht unterschrieben werden"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Was gehoert zu den Sekundaerbeduerfnissen?",
+      "type": "multi",
+      "answers": [
+        "Reisen",
+        "Unterhaltung",
+        "Bildung",
+        "Nahrung",
+        "Atmung"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Welche Folgen hat ein Verstoss gegen die Schweigepflicht?",
+      "type": "multi",
+      "answers": [
+        "Abmahnung",
+        "Kuendigung",
+        "Urlaubsverlust",
+        "Lohnerhoehung",
+        "Befoerderung"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Was regelt das Handelsgesetzbuch (HGB)?",
+      "type": "multi",
+      "answers": [
+        "Kaufmannsbegriff",
+        "Handelsregister",
+        "Prokura",
+        "Tarifvertraege",
+        "Berufsschulpflicht"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Was gehoert zur Personalbeschaffung intern?",
+      "type": "multi",
+      "answers": [
+        "Versetzung",
+        "Befoerderung",
+        "Stellenausschreibung in Zeitung",
+        "Headhunter",
+        "Jobmessen"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Funktion hat der Ausbildungsrahmenplan?",
+      "type": "single",
+      "answers": [
+        "Gibt die Inhalte der Ausbildung vor",
+        "Regelt Urlaub",
+        "Legt das Gehalt fest",
+        "Bestimmt Schulnoten",
+        "Entscheidet ueber Kuendigung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wann beginnt die Probezeit laut BBiG fruehestens?",
+      "type": "single",
+      "answers": [
+        "Mit Beginn des Ausbildungsverhaeltnisses",
+        "Am ersten Schultag",
+        "Nach drei Monaten",
+        "Nach erster Bewertung",
+        "Nach Eintragung bei der IHK"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was versteht man unter einer Marktform mit vielen Anbietern und Nachfragern?",
+      "type": "single",
+      "answers": [
+        "Polypol",
+        "Monopol",
+        "Oligopol",
+        "Kartell",
+        "Duopol"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Aussage zur JAV ist richtig?",
+      "type": "single",
+      "answers": [
+        "Vertritt Interessen der Jugendlichen und Azubis",
+        "Wird vom Chef ernannt",
+        "Ist immer vollbesetzt",
+        "Besteht aus dem Betriebsrat",
+        "Hat keine Mitwirkungsrechte"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Aussage zum Tarifvertrag stimmt?",
+      "type": "multi",
+      "answers": [
+        "Regelt Loehne und Arbeitsbedingungen",
+        "Gilt fuer alle Mitglieder der Tarifparteien",
+        "Wird von der Regierung beschlossen",
+        "Gilt automatisch fuer alle Betriebe",
+        "Ist nicht einklagbar"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Was ist ein Merkmal der sozialen Marktwirtschaft?",
+      "type": "multi",
+      "answers": [
+        "Staat greift bei Ungleichgewicht ein",
+        "Planvorgaben fuer Unternehmen",
+        "Freiheit des Wettbewerbs",
+        "Kein Privateigentum",
+        "Staatsmonopole"
+      ],
+      "solution": [
+        1,
+        3
+      ]
+    },
+    {
+      "question": "Welche Organisation fuehrt die Abschlusspruefung durch?",
+      "type": "single",
+      "answers": [
+        "Industrie- und Handelskammer (IHK)",
+        "Berufsschule",
+        "Ausbilder",
+        "Betriebsrat",
+        "Ausbildungsbetrieb"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wann gilt ein Betrieb als ausbildungsberechtigt?",
+      "type": "single",
+      "answers": [
+        "Wenn geeignete Ausbilder vorhanden sind",
+        "Wenn die Ausstattung ausreichend ist",
+        "Wenn der Chef es will",
+        "Wenn Azubis anwesend sind"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist das Ziel wirtschaftlichen Handelns?",
+      "type": "single",
+      "answers": [
+        "Weniger arbeiten",
+        "Beduerfnisse mit knappen Guetern bestmoeglich befriedigen",
+        "Moeglichst viele Konsumgueter verkaufen",
+        "Steuern sparen",
+        "Nur Grundbeduerfnisse decken"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was versteht man unter einem Beduerfnis?",
+      "type": "single",
+      "answers": [
+        "Ein kostenloses Gut",
+        "Ein Wunsch, der staatlich geregelt ist",
+        "Das Verlangen, einen Mangel zu beheben",
+        "Nur ein materielles Gut",
+        "Ein Produkt mit Preis"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was sind wirtschaftliche Gueter?",
+      "type": "single",
+      "answers": [
+        "Gueter, die knapp sind und einen Preis haben",
+        "Dinge, die der Staat verschenkt",
+        "Nur digitale Produkte",
+        "Nur Dienstleistungen",
+        "Nur Gueter aus dem Ausland"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Aussage zu freien Guetern ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Sie sind nur im Internet verfuegbar",
+        "Sie sind unbegrenzt vorhanden und kostenfrei",
+        "Sie werden subventioniert",
+        "Sie entstehen durch Produktion",
+        "Sie unterliegen der Mehrwertsteuer"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Bedarf?",
+      "type": "single",
+      "answers": [
+        "Ein konkretes Beduerfnis",
+        "Ein Wunsch ohne Preis",
+        "Eine Dienstleistung",
+        "Eine Form der Produktion",
+        "Eine Rechnungseinheit"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was beschreibt die Knappheit von Guetern?",
+      "type": "single",
+      "answers": [
+        "Es gibt keine Nachfrage",
+        "Die begrenzte Verfuegbarkeit im Vergleich zu den Beduerfnissen",
+        "Nur der Staat darf sie herstellen",
+        "Es sind ausschliesslich Sachgueter",
+        "Sie unterliegen keinem Preis"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was unterscheidet ein Konsumgut von einem Investitionsgut?",
+      "type": "single",
+      "answers": [
+        "Konsumgueter dienen dem Endverbrauch, Investitionsgueter der Produktion",
+        "Konsumgueter sind teurer",
+        "Investitionsgueter haben keine Mehrwertsteuer",
+        "Konsumgueter sind nur fuer Unternehmen",
+        "Investitionsgueter kann man nicht kaufen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist das Ziel eines Unternehmens im wirtschaftlichen Sinne?",
+      "type": "single",
+      "answers": [
+        "Gewinn erwirtschaften durch Beduerfnisbefriedigung",
+        "Soziale Projekte foerdern",
+        "Steuerfreiheit erreichen",
+        "Keine Waren verkaufen",
+        "Die Konkurrenz uebernehmen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welcher Produktionsfaktor gehoert nicht zu den klassischen vier?",
+      "type": "single",
+      "answers": [
+        "Arbeit",
+        "Kapital",
+        "Energie",
+        "Boden",
+        "Bildung"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was beschreibt der Begriff Kapital im wirtschaftlichen Sinne?",
+      "type": "single",
+      "answers": [
+        "Bargeldreserven",
+        "Produktionsmittel wie Maschinen oder Anlagen",
+        "Aktienbesitz",
+        "Kontostand",
+        "Umsatz"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was gehoert zum Produktionsfaktor Arbeit?",
+      "type": "single",
+      "answers": [
+        "Nur koerperliche Taetigkeit",
+        "Koerperliche und geistige Taetigkeit zur Produktion",
+        "Nur Arbeitsvertraege",
+        "Die Nutzung von Computern",
+        "Die Hoehe des Lohns"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was zaehlt zum Produktionsfaktor Boden?",
+      "type": "single",
+      "answers": [
+        "Nutzflaechen, Rohstoffe und Standorte",
+        "Nur landwirtschaftliche Flaechen",
+        "Firmengelaende",
+        "Wohnimmobilien",
+        "Nur Bergbau"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Markt im volkswirtschaftlichen Sinn?",
+      "type": "single",
+      "answers": [
+        "Nur der Wochenmarkt",
+        "Ort des Zusammentreffens von Angebot und Nachfrage",
+        "Die Lagerhalle eines Unternehmens",
+        "Nur der Onlinehandel",
+        "Eine Preisuebersicht"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was bedeutet das oekonomische Prinzip?",
+      "type": "single",
+      "answers": [
+        "Mit knappen Mitteln wirtschaftlich handeln",
+        "So viele Produkte wie moeglich kaufen",
+        "Steuern vermeiden",
+        "Auf Werbung verzichten",
+        "Alle Ressourcen aufbrauchen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Aussage beschreibt das Minimalprinzip?",
+      "type": "single",
+      "answers": [
+        "Ein bestimmtes Ziel mit moeglichst geringem Mitteleinsatz erreichen",
+        "Moeglichst viel mit allen Mitteln erreichen",
+        "Alles kaufen, was guenstig ist",
+        "Den geringsten Gewinn machen",
+        "Keine Investitionen taetigen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was beschreibt das Maximalprinzip?",
+      "type": "single",
+      "answers": [
+        "Moeglichst viele Menschen einstellen",
+        "Mit gegebenen Mitteln den groesstmoeglichen Nutzen erzielen",
+        "So wenig wie moeglich tun",
+        "Alles sparen",
+        "Nur qualitativ hochwertige Gueter nutzen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Oligopol?",
+      "type": "single",
+      "answers": [
+        "Wenige Anbieter, viele Nachfrager",
+        "Ein Anbieter, keine Nachfrager",
+        "Viele Anbieter, viele Nachfrager",
+        "Kein Wettbewerb",
+        "Nur staatlich erlaubte Maerkte"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist das Merkmal eines Polypols?",
+      "type": "single",
+      "answers": [
+        "Viele Anbieter und viele Nachfrager",
+        "Ein Anbieter, viele Nachfrager",
+        "Staatliche Kontrolle",
+        "Keine Konkurrenz",
+        "Nur digitale Produkte"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was regelt das Berufsbildungsgesetz?",
+      "type": "multi",
+      "answers": [
+        "Pflichten von Ausbilder und Azubi",
+        "Inhalte des Ausbildungsvertrags",
+        "Probezeit",
+        "Ausbildungsdauer",
+        "Tarifvertraege"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Wann liegt ein Bedarf vor?",
+      "type": "single",
+      "answers": [
+        "Wenn ein Beduerfnis mit Kaufkraft verbunden ist",
+        "Wenn jemand etwas wuenscht",
+        "Wenn eine Werbung das suggeriert",
+        "Wenn ein Unternehmen es anbietet",
+        "Wenn es im Supermarkt steht"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was versteht man unter Nachfrage?",
+      "type": "single",
+      "answers": [
+        "Kaufabsicht mit Zahlungsbereitschaft",
+        "Bedingung ohne Geld",
+        "Kaufkraft ohne Wunsch",
+        "Beduerfnis an sich",
+        "Werbung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was gehoert nicht zu den Rechten eines Arbeitnehmers?",
+      "type": "single",
+      "answers": [
+        "Entgeltfortzahlung im Krankheitsfall",
+        "Urlaub",
+        "Eigenmaechtige Arbeitszeitgestaltung",
+        "Kuendigungsschutz",
+        "Pause"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist der Zweck eines Ausbildungsplans?",
+      "type": "multi",
+      "answers": [
+        "Uebersicht ueber Inhalte und Zeitpunkte der Ausbildung",
+        "Berechnung der Ausbildungsvergutung",
+        "Grundlage fuer die praktische Ausbildung",
+        "Urlaubsplanung",
+        "Berufsberatung"
+      ],
+      "solution": [
+        1,
+        3
+      ]
+    },
+    {
+      "question": "Wer unterschreibt den Ausbildungsvertrag bei Minderjaehrigen?",
+      "type": "single",
+      "answers": [
+        "Der Auszubildende",
+        "Der gesetzliche Vertreter",
+        "Die Berufsschule",
+        "Der Betriebsrat",
+        "Die Agentur fuer Arbeit"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist das Ziel der Personalbeschaffung?",
+      "type": "multi",
+      "answers": [
+        "Passende Mitarbeiter finden",
+        "Engpaesse vermeiden",
+        "Lohnkosten senken",
+        "Mitarbeiter kuendigen",
+        "Sozialleistungen reduzieren"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Mitbestimmungsrechte haben Jugendliche?",
+      "type": "single",
+      "answers": [
+        "Teilnahme an Jugend- und Auszubildendenvertretung",
+        "Betriebsrat waehlen ab 14 Jahren",
+        "Anhoerung durch Betriebsrat",
+        "Mitwirkung an Unternehmensentscheidungen",
+        "Mitentscheidung bei Lohnverhandlungen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was bewirkt eine expansive Fiskalpolitik?",
+      "type": "single",
+      "answers": [
+        "Ankurbelung der Wirtschaft durch staatliche Ausgaben",
+        "Steuererhoehungen zur Haushaltskonsolidierung",
+        "Rueckzug des Staates aus der Wirtschaft",
+        "Einschraenkung der Importe",
+        "Einfuehrung von Subventionen fuer Banken"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Institution ist fuer die Geldpolitik zustaendig?",
+      "type": "single",
+      "answers": [
+        "Bundestag",
+        "Bundeskanzleramt",
+        "Europaeische Zentralbank (EZB)",
+        "Bundesagentur fuer Arbeit",
+        "Bundesrechnungshof"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist das Ziel einer restriktiven Geldpolitik?",
+      "type": "single",
+      "answers": [
+        "Mehr Konsum anregen",
+        "Inflation senken",
+        "Unternehmen staerker foerdern",
+        "Wirtschaftswachstum ankurbeln",
+        "Arbeitslosigkeit steigern"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Istkaufmann gemaess HGB?",
+      "type": "single",
+      "answers": [
+        "Eine Person, die aufgrund eines Studiums Handel betreibt",
+        "Ein Kaufmann, der nur gelegentlich Handel betreibt",
+        "Eine natuerliche Person, die ein Handelsgewerbe betreibt und kraft Gesetz Kaufmann ist",
+        "Ein Unternehmen, das im Handelsregister eingetragen ist",
+        "Eine juristische Person mit einem Handelsgeschaeft"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wann wird ein Kannkaufmann ins Handelsregister eingetragen?",
+      "type": "single",
+      "answers": [
+        "Wenn er ein Studium abgeschlossen hat",
+        "Wenn das Unternehmen eine GmbH ist",
+        "Wenn die Gemeinde dies genehmigt",
+        "Wenn er ein Kleingewerbe betreibt und sich freiwillig eintragen laesst",
+        "Wenn er mehr als 10 Mitarbeiter hat"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Welche Aussage trifft auf den Istkaufmann zu?",
+      "type": "single",
+      "answers": [
+        "Ist gesetzlich verpflichtet, sich ins Handelsregister einzutragen",
+        "Muss keine Buecher fuehren",
+        "Darf keine Angestellten haben",
+        "Ist immer eine juristische Person",
+        "Gilt nur im EU-Ausland"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Pflicht hat ein Kaufmann laut HGB?",
+      "type": "single",
+      "answers": [
+        "Muss stets Umsatzsteuer zahlen",
+        "Muss Buecher fuehren",
+        "Muss einen Prokuristen haben",
+        "Muss eine GmbH gruenden",
+        "Muss ins Gewerberegister eingetragen sein"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche der folgenden ist eine zulaessige Firmenbildung?",
+      "type": "single",
+      "answers": [
+        "Reiner Vorname",
+        "Fantasiebezeichnung mit Rechtsformzusatz (z. B. \"TechNova GmbH\")",
+        "Verwendung des Wortes \"Universitaet\" ohne Genehmigung",
+        "Verwendung nur einer Zahl",
+        "Ein Emoji als Firmenname"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Warum muss der Rechtsformzusatz (z. B. GmbH) in der Firma enthalten sein?",
+      "type": "single",
+      "answers": [
+        "Zur Kennzeichnung der Haftungsverhaeltnisse",
+        "Weil es gesetzlich verboten ist, ihn wegzulassen",
+        "Damit die Firma international klingt",
+        "Zur Abkuerzung der Adresse",
+        "Fuer steuerliche Vorteile"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Voraussetzung gilt fuer Fantasienamen in der Firma?",
+      "type": "single",
+      "answers": [
+        "Der Name muss englisch sein",
+        "Er darf keine Irrefuehrung bewirken",
+        "Er muss die Rechtsform enthalten",
+        "Er darf nur zwei Silben haben",
+        "Er muss mit dem Nachnamen beginnen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Marktform liegt beim Monopol vor?",
+      "type": "single",
+      "answers": [
+        "Viele Anbieter, ein Nachfrager",
+        "Ein Anbieter, viele Nachfrager",
+        "Viele Anbieter, viele Nachfrager",
+        "Viele Nachfrager, viele Produzenten",
+        "Keine Nachfrage"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Preis?",
+      "type": "single",
+      "answers": [
+        "Die Steuerlast auf ein Produkt",
+        "Der Geldwert eines Gutes auf dem Markt",
+        "Der Lohn fuer Arbeit",
+        "Die Produktionskosten",
+        "Eine staatliche Abgabe"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Ziel der staatlichen Wirtschaftspolitik laut Stabilitaetsgesetz?",
+      "type": "single",
+      "answers": [
+        "Preisstabilitaet",
+        "Erhoehung der Steuerquote",
+        "Foerderung von Aktienhandel",
+        "Privatisierung aller Unternehmen",
+        "Erhoehung der Inflation"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was bedeutet das magische Viereck?",
+      "type": "single",
+      "answers": [
+        "Vier Steuersaetze",
+        "Vier Regionen mit Wirtschaftswachstum",
+        "Vier wirtschaftspolitische Ziele, die gleichzeitig angestrebt werden",
+        "Vier Gesetze zur Finanzordnung",
+        "Ein Marktmodell"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Ziele umfasst das magische Viereck?",
+      "type": "single",
+      "answers": [
+        "Preisstabilitaet, Vollbeschaeftigung, Wirtschaftswachstum, aussenwirtschaftliches Gleichgewicht",
+        "Steuersenkung, Wachstum, Export, Digitalisierung",
+        "Bildung, Arbeit, Digitalisierung, Umwelt",
+        "Geldwert, Mindestlohn, Wachstum, Technologie",
+        "Inflation, Rezession, Boom, Depression"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Beispiel fuer aktive Arbeitsmarktpolitik?",
+      "type": "single",
+      "answers": [
+        "Qualifizierungsmassnahmen fuer Arbeitslose",
+        "Mindestlohnerhoehung",
+        "Kuendigungsschutz",
+        "Steuererleichterungen",
+        "Erhoehung der Sozialversicherungsbeitraege"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was darf ein Prokurist laut HGB grundsaetzlich tun?",
+      "type": "single",
+      "answers": [
+        "Alle Arten von gerichtlichen und aussergerichtlichen Geschaeften fuehren",
+        "Jahresabschluesse pruefen",
+        "Die Firma umbenennen",
+        "Prokura erteilen",
+        "Hauptversammlungen einberufen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer darf Prokura erteilen?",
+      "type": "single",
+      "answers": [
+        "Jeder Mitarbeiter",
+        "Nur der Geschaeftsinhaber oder ein vertretungsberechtigter Geschaeftsfuehrer",
+        "Der Steuerberater",
+        "Der Betriebsrat",
+        "Die Industrie- und Handelskammer"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Geschaefte darf ein Prokurist nicht taetigen?",
+      "type": "single",
+      "answers": [
+        "Kundenberatung",
+        "Veraeusserung des Unternehmens",
+        "Vertragsverhandlungen",
+        "Einkauf von IT-Geraeten",
+        "Personalgespraeche fuehren"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist Gesamtprokura?",
+      "type": "single",
+      "answers": [
+        "Prokura, die nur gemeinsam mit anderen Prokuristen ausgeuebt werden darf",
+        "Prokura mit Vollmacht fuer alles",
+        "Prokura auf Zeit",
+        "Prokura fuer alle Abteilungen",
+        "Die Prokura des Geschaeftsfuehrers"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Darf ein Prokurist selbst Prokura erteilen?",
+      "type": "single",
+      "answers": [
+        "Ja, jederzeit",
+        "Nur mit Zustimmung der Mitarbeiter",
+        "Nein, das ist nur dem Geschaeftsinhaber erlaubt",
+        "Ja, bei langer Betriebszugehoerigkeit",
+        "Nur bei Einzelprokura"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist ein wirtschaftliches Unternehmensziel?",
+      "type": "single",
+      "answers": [
+        "Gewinnsteigerung",
+        "Mitarbeiterzufriedenheit",
+        "CO2-Reduktion",
+        "Gutes Betriebsklima",
+        "Imagepflege"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Produktivitaetsziel?",
+      "type": "single",
+      "answers": [
+        "Mehr Output bei gleichem Input",
+        "Weniger Gewinn, mehr Freizeit",
+        "Mehr Kundenkontakt",
+        "Groessere Lagerflaeche",
+        "Geringere Investitionen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was beschreibt einen Zielkonflikt im Unternehmen?",
+      "type": "single",
+      "answers": [
+        "Wirtschaftlichkeit vs. Sozialvertraeglichkeit",
+        "Marketing vs. Vertrieb",
+        "Kundenservice vs. IT",
+        "Fuehrung vs. Teamarbeit",
+        "Chef vs. Mitarbeiter"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was bedeutet Nachhaltigkeit als Unternehmensziel?",
+      "type": "single",
+      "answers": [
+        "Mehr Verpackung",
+        "Schonender Umgang mit Ressourcen",
+        "Groessere Gewinne",
+        "Kuerzere Arbeitszeiten",
+        "Hoher Transportkosten"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein oekologisches Ziel eines Unternehmens?",
+      "type": "single",
+      "answers": [
+        "Verringerung des Energieverbrauchs",
+        "Gewinnmaximierung",
+        "Personalbindung",
+        "Umsatzsteigerung",
+        "Lagervergroesserung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Warum sind klare Ziele fuer ein Unternehmen wichtig?",
+      "type": "single",
+      "answers": [
+        "Damit alle Mitarbeiter Urlaub beantragen koennen",
+        "Um Massnahmen gezielt planen und steuern zu koennen",
+        "Damit der Steuerberater schneller arbeiten kann",
+        "Zur besseren Bueroausstattung",
+        "Fuer die Internetpraesenz"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Beduerfnis im wirtschaftlichen Sinne?",
+      "type": "single",
+      "answers": [
+        "Ein Wunsch nach einem besseren Leben",
+        "Ein subjektiv empfundener Mangel",
+        "Eine konkrete Kaufabsicht",
+        "Ein staatlicher Anspruch",
+        "Eine Anforderung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was versteht man unter Bedarf im wirtschaftlichen Kontext?",
+      "type": "single",
+      "answers": [
+        "Die Summe aller Beduerfnisse einer Gesellschaft",
+        "Die Wuensche der Verbraucher",
+        "Ein Beduerfnis, das mit finanziellen Mitteln gedeckt werden kann",
+        "Eine allgemeine Marktnachfrage",
+        "Ein staatlicher Wirtschaftsplan"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Produktionsfaktoren gehoeren zu den Grundbegriffen der Volkswirtschaft?",
+      "type": "multi",
+      "answers": [
+        "Arbeit",
+        "Kapital",
+        "Boden",
+        "Marketing",
+        "Wissen"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "question": "Was bedeutet das oekonomische Prinzip?",
+      "type": "single",
+      "answers": [
+        "Maximierung des Gewinns",
+        "Minimierung des Mitteleinsatzes bei gegebener Zielerreichung",
+        "Maximierung des Einsatzes bei minimalem Ertrag",
+        "Bestimmung des optimalen Preises",
+        "Reduzierung der Produktionskosten auf Null"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Gueter gehoeren zu den freien Guetern?",
+      "type": "multi",
+      "answers": [
+        "Wasser",
+        "Luft",
+        "Handys",
+        "Lebensmittel",
+        "Luxusprodukte"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welches Ziel verfolgt die staatliche Wirtschaftspolitik?",
+      "type": "multi",
+      "answers": [
+        "Vollbeschaeftigung",
+        "Soziale Gerechtigkeit",
+        "Hohe Steuereinnahmen",
+        "Preisstabilitaet",
+        "Hohe Arbeitslosigkeit"
+      ],
+      "solution": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "question": "Was bedeutet Kaufmannseigenschaft?",
+      "type": "single",
+      "answers": [
+        "Ein Unternehmen muss hohe Gewinne erwirtschaften",
+        "Eine Person betreibt ein Handelsgewerbe",
+        "Ein Kaufmann ist von der Mehrwertsteuer befreit",
+        "Nur Grossunternehmen koennen Kaufleute sein",
+        "Kaufleute sind immer juristische Personen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was versteht man unter Prokura?",
+      "type": "single",
+      "answers": [
+        "Ein gesetzlich festgelegtes Verkaufsrecht",
+        "Eine Vollmacht, die es dem Prokuristen erlaubt, im Namen des Unternehmens zu handeln",
+        "Eine Befugnis zur Mitarbeit in der Personalabteilung",
+        "Eine Genehmigung fuer Marketingaktionen",
+        "Eine staatlich verordnete Verkaufsstrategie"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was gehoert zu den Pflichten des Ausbilders?",
+      "type": "multi",
+      "answers": [
+        "Bereitstellung eines geeigneten Ausbildungsplatzes",
+        "Zahlung der Ausbildungsvergutung",
+        "Festlegung der Pruefungsinhalte",
+        "Organisation von Schulungen ausserhalb der Berufsschule",
+        "Vermittlung von praktischen Kenntnissen und Fertigkeiten"
+      ],
+      "solution": [
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "question": "Was beschreibt ein Ausbildungsplan?",
+      "type": "single",
+      "answers": [
+        "Eine Uebersicht ueber die rechtlichen Pflichten des Ausbilders",
+        "Eine detaillierte Planung der praktischen und theoretischen Ausbildungsinhalte",
+        "Ein Bericht ueber die Erfolge der Ausbildung",
+        "Eine Liste der zu erbringenden Pruefungsleistungen",
+        "Ein Verzeichnis der Auszubildenden"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Pflicht hat der Auszubildende im Hinblick auf das Berichtsheft?",
+      "type": "single",
+      "answers": [
+        "Es muss wochenlich beim Chef abgegeben werden",
+        "Es darf nur nach Abgabe seiner Inhalte und Taetigkeiten fuehren",
+        "Es muss nach den Richtlinien des Ausbilders abgegeben werden",
+        "Der Auszubildende muss das Berichtsheft fuehren",
+        "Es ist nur zur privaten Nutzung gedacht"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Was ist eine der wichtigsten Aufgaben der Berufsschule waehrend der Ausbildung?",
+      "type": "single",
+      "answers": [
+        "Die praktische Ausbildung im Unternehmen",
+        "Die Vorbereitung auf die Abschlusspruefung",
+        "Die Einfuehrung in die Unternehmensstrategie",
+        "Die Gestaltung des Betriebsklimas",
+        "Die Organisation von Praktika"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was sind die Pflichten des Auszubildenden?",
+      "type": "multi",
+      "answers": [
+        "Einhaltung der Arbeitszeiten",
+        "Teilnahme am Berufsschulunterricht",
+        "Kuendigung des Ausbildungsvertrags bei Unzufriedenheit",
+        "Zahlung der Ausbildungsvergutung",
+        "Gewaehrleistung von Praktikumsplaetzen fuer andere Azubis"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Rechte und Pflichten hat der Auszubildende?",
+      "type": "multi",
+      "answers": [
+        "Anspruch auf Verguetung",
+        "Verpflichtung zur Arbeit ohne Freizeit",
+        "Anspruch auf Abschlusszeugnis",
+        "Pflicht zur Teilnahme an Pruefungen",
+        "Recht auf unbegrenzten Urlaub"
+      ],
+      "solution": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was ist der Europass?",
+      "type": "single",
+      "answers": [
+        "Ein internationaler Ausweis fuer Azubis",
+        "Ein Nachweis ueber die im Ausland erworbenen Qualifikationen",
+        "Ein Dokument zur Beantragung von Urlaubsanspruechen",
+        "Ein Zeugnis, das nur fuer europaeische Unternehmen relevant ist",
+        "Eine Auszeichnung fuer die besten Auszubildenden in Europa"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was beschreibt Mitbestimmung fuer Arbeitnehmer?",
+      "type": "single",
+      "answers": [
+        "Die Moeglichkeit, den Geschaeftsfuehrer zu waehlen",
+        "Das Recht der Arbeitnehmer, in bestimmten Unternehmensentscheidungen mitzuwirken",
+        "Die Erhoehung der Arbeitszeit auf Wunsch der Arbeitnehmer",
+        "Das Recht, das Unternehmen zu fuehren",
+        "Die Regelung von Gehaeltern durch die Belegschaft"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was bedeutet Personalbeschaffung?",
+      "type": "single",
+      "answers": [
+        "Die Auswahl von Lieferanten fuer das Unternehmen",
+        "Die Rekrutierung von neuen Mitarbeitern fuer das Unternehmen",
+        "Die Anpassung der Arbeitsbedingungen an die gesetzlichen Vorschriften",
+        "Die Verwaltung der Urlaubszeiten der Mitarbeiter",
+        "Die Organisation von Weiterbildungsmaßnahmen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist eine Aufbauorganisation?",
+      "type": "single",
+      "answers": [
+        "Die Gestaltung von Marketingkampagnen",
+        "Die Strukturierung von Aufgaben und Verantwortlichkeiten im Unternehmen",
+        "Die Definition von Unternehmenszielen",
+        "Die Aufteilung des Unternehmens auf verschiedene Regionen",
+        "Die Planung von Betriebsfeiern"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Organigramm?",
+      "type": "single",
+      "answers": [
+        "Ein Finanzplan fuer das Unternehmen",
+        "Ein Dokument, das die Hierarchie und Struktur des Unternehmens darstellt",
+        "Eine Liste aller Lieferanten des Unternehmens",
+        "Eine Beschreibung der Unternehmensstrategie",
+        "Ein Bericht ueber die Jahresziele des Unternehmens"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist strategisches Marketing?",
+      "type": "single",
+      "answers": [
+        "Die Durchfuehrung von Werbung in den sozialen Medien",
+        "Die Planung langfristiger Unternehmensziele im Hinblick auf die Marktstellung",
+        "Die Auswahl von Vertriebskanaelen",
+        "Die kurzfristige Umsatzsteigerung",
+        "Die Marktanalyse von Wettbewerbern"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was gehoert zum operativen Marketing?",
+      "type": "single",
+      "answers": [
+        "Die Entwicklung langfristiger Unternehmensstrategien",
+        "Die Preisgestaltung fuer Produkte",
+        "Die Analyse von Konkurrenzunternehmen",
+        "Die Ausfuehrung von Werbeaktionen und Verkaufsfoerderung",
+        "Die Planung der Personalpolitik"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Was umfasst der Marketingmix?",
+      "type": "multi",
+      "answers": [
+        "Produktpolitik",
+        "Preispolitik",
+        "Kommunikation",
+        "Vertriebspolitik",
+        "Kapitalbeschaffung"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was ist eine SWOT-Analyse?",
+      "type": "single",
+      "answers": [
+        "Eine Methode zur Bestimmung von Preisen",
+        "Eine Analyse zur Bestimmung der Staerken, Schwaechen, Chancen und Bedrohungen",
+        "Eine Marktanalyse zur Bestimmung der Zielgruppe",
+        "Eine Methode zur Verbesserung der Mitarbeiterzufriedenheit",
+        "Eine Strategie zur Umsatzsteigerung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was beschreibt der Produktlebenszyklus?",
+      "type": "single",
+      "answers": [
+        "Die Entwicklung und Markteinfuehrung eines Produkts",
+        "Die Zeitenpanne, in der ein Produkt auf dem Markt erfolgreich ist, bevor es wieder vom Markt genommen wird",
+        "Die Preisentwicklung eines Produkts",
+        "Die Marktsegmente, die ein Produkt anspricht",
+        "Die Anzahl der produzierten Einheiten eines Produkts"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was versteht man unter Social Media Marketing?",
+      "type": "single",
+      "answers": [
+        "Die Verwendung von Social Media zur direkten Kommunikation mit Kunden",
+        "Werbung auf traditionellen Medienkanaelen wie TV und Radio",
+        "Die Erstellung von sozialen Netzwerken fuer Unternehmen",
+        "Die Entwicklung von Produkten fuer die Social-Media-Welt",
+        "Die Erstellung von Printwerbung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist das Ziel der Marktanalyse?",
+      "type": "single",
+      "answers": [
+        "Die Erhoehung der Verkaufszahlen durch neue Produkte",
+        "Die Untersuchung von Markttrends und Wettbewerbern",
+        "Die Reduzierung der Produktionskosten",
+        "Die Schaffung eines Markenimages",
+        "Die Steigerung der Markenbekanntheit"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist das Ziel der SWOT-Analyse?",
+      "type": "single",
+      "answers": [
+        "Identifizierung der Staerken und Schwaechen des Unternehmens",
+        "Festlegung der Verkaufspreise fuer Produkte",
+        "Identifizierung der finanziellen Lage des Unternehmens",
+        "Festlegung des optimalen Produktionsstandorts",
+        "Erstellung eines Jahresberichts"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was sind typische Aufgaben im operativen Marketing?",
+      "type": "single",
+      "answers": [
+        "Entwicklung der Unternehmensstrategie",
+        "Gestaltung der Werbemaßnahmen",
+        "Budgetplanung fuer das naechste Geschaeftsjahr",
+        "Durchfuehrung von Innovationsprozessen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was versteht man unter Marketing?",
+      "type": "single",
+      "answers": [
+        "Verkauf von Produkten",
+        "Kundenorientierte Unternehmensfuehrung",
+        "Werbung in sozialen Medien",
+        "Planung von Messeauftritten",
+        "Entwicklung von Software fuer Werbung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was sind Ziele des Marketings?",
+      "type": "multi",
+      "answers": [
+        "Hoeherer Absatz",
+        "Kundenzufriedenheit",
+        "Gewinnvermeidung",
+        "Imageverschlechterung",
+        "Langfristige Kundenbindung"
+      ],
+      "solution": [
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "question": "Was ist der Unterschied zwischen strategischem und operativem Marketing?",
+      "type": "single",
+      "answers": [
+        "Strategisch = kurzfristig",
+        "Operativ = langfristig",
+        "Strategisch = Grundsatzentscheidungen, Operativ = konkrete Maßnahmen",
+        "Strategisch = Werbemaßnahmen",
+        "Es gibt keinen Unterschied"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Aufgaben gehoeren zum strategischen Marketing?",
+      "type": "multi",
+      "answers": [
+        "Marktsegmentierung",
+        "Zielgruppenanalyse",
+        "Preisgestaltung",
+        "Werbemittelplanung",
+        "Positionierung"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Aussagen zum operativen Marketing sind korrekt?",
+      "type": "multi",
+      "answers": [
+        "Umsetzung der Marketingstrategie",
+        "Preiskationieren",
+        "Entwicklung langfristiger Visionen",
+        "Auswahl von Kommunikationskanaelen",
+        "Planung von Marktanteilen"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Begriffe gehoeren zum Marketing-Mix (4 Ps)?",
+      "type": "multi",
+      "answers": [
+        "Product",
+        "Price",
+        "Place",
+        "Promotion",
+        "Planning"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was zaehlt zur Produktpolitik (Product)?",
+      "type": "multi",
+      "answers": [
+        "Verpackung",
+        "Preisgestaltung",
+        "Design",
+        "Garantie",
+        "Werbeslogan"
+      ],
+      "solution": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was zaehlt zur Preispolitik (Price)?",
+      "type": "multi",
+      "answers": [
+        "Rabatte",
+        "Zahlungsbedingungen",
+        "Preisstrategien",
+        "Werbeplakate",
+        "Verpackung"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Welche Massnahmen gehoeren zur Kommunikationspolitik (Promotion)?",
+      "type": "multi",
+      "answers": [
+        "Werbung",
+        "Public Relations",
+        "Direktmarketing",
+        "Verkaufsfoerderung",
+        "Preiserhoehung"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was gehoert zur Distributionspolitik (Place)?",
+      "type": "multi",
+      "answers": [
+        "Vertriebswege",
+        "Lagerhaltung",
+        "Transport",
+        "Preisgestaltung",
+        "Standortwahl"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "question": "Was ist das Ziel der Marktanalyse?",
+      "type": "multi",
+      "answers": [
+        "Vermeidung von Werbung",
+        "Einschaetzung von Marktpotenzial",
+        "Bestimmung von Markttrends",
+        "Aufloesung von Wettbewerbern",
+        "Identifikation von Zielgruppen"
+      ],
+      "solution": [
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "question": "Welche Bestandteile hat eine Marktanalyse?",
+      "type": "multi",
+      "answers": [
+        "Marktgroesse",
+        "Marktanteile",
+        "Marktstruktur",
+        "Markttrends",
+        "Mitarbeiterzufriedenheit"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was ist eine Zielgruppe?",
+      "type": "single",
+      "answers": [
+        "Alle Menschen weltweit",
+        "Eine bestimmte Kundengruppe, auf die sich das Marketing konzentriert",
+        "Nur Jugendliche",
+        "Die Mitarbeiter eines Unternehmens",
+        "Eine Produktgruppe"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was analysiert die SWOT-Analyse?",
+      "type": "multi",
+      "answers": [
+        "Unternehmensbereiche",
+        "Staerken (Strengths)",
+        "Schwaechen (Weaknesses)",
+        "Chancen (Opportunities)",
+        "Bedrohungen (Threats)"
+      ],
+      "solution": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "question": "Welche Elemente gehoeren zur internen Analyse der SWOT-Methode?",
+      "type": "multi",
+      "answers": [
+        "Staerken",
+        "Schwaechen",
+        "Chancen",
+        "Bedrohungen",
+        "Marktvolumen"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Welche Elemente der SWOT-Analyse gehoeren zur externen Sicht?",
+      "type": "multi",
+      "answers": [
+        "Chancen",
+        "Bedrohungen",
+        "Mitarbeiterfuehrung",
+        "Produktionskapazitaet",
+        "Kostenstruktur"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Was ist eine Staerke im Sinne der SWOT-Analyse?",
+      "type": "multi",
+      "answers": [
+        "Gute Marktkenntnis",
+        "Hoher Wettbewerb",
+        "Langsame Produktion",
+        "Gute Kundenbeziehungen",
+        "Wirtschaftskrise"
+      ],
+      "solution": [
+        1,
+        4
+      ]
+    },
+    {
+      "question": "Was koennte eine Bedrohung (Threat) darstellen?",
+      "type": "multi",
+      "answers": [
+        "Neue Wettbewerber",
+        "Gesetzesaenderungen",
+        "Produktvorteile",
+        "Technologischer Fortschritt beim Konkurrenten",
+        "Kundenloyalitaet"
+      ],
+      "solution": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "question": "Warum ist die SWOT-Analyse wichtig fuer das Marketing?",
+      "type": "multi",
+      "answers": [
+        "Sie ersetzt Werbung",
+        "Sie zeigt Handlungsfelder",
+        "Sie hilft bei der Strategieentwicklung",
+        "Sie bestimmt den Produktpreis",
+        "Sie erhoeht automatisch den Umsatz"
+      ],
+      "solution": [
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Welche Aussagen zur SWOT-Analyse sind falsch?",
+      "type": "single",
+      "answers": [
+        "Sie betrachtet nur interne Faktoren",
+        "Sie ist ein Analyseinstrument",
+        "Sie dient der Situationsanalyse",
+        "Sie hilft, Staerken zu nutzen",
+        "Sie identifiziert Risiken"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "In welcher Phase des Produktlebenszyklus ist der Umsatz typischerweise am hoechsten?",
+      "type": "single",
+      "answers": [
+        "Einfuehrung",
+        "Wachstum",
+        "Reife",
+        "Degeneration",
+        "Entwicklung"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Phasen gehoeren zum Produktlebenszyklus?",
+      "type": "multi",
+      "answers": [
+        "Einfuehrung",
+        "Wachstum",
+        "Reife",
+        "Saettigung",
+        "Recycling"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was kennzeichnet die Einfuehrungsphase?",
+      "type": "multi",
+      "answers": [
+        "Hohe Werbeausgaben",
+        "Hoher Gewinn",
+        "Unsicherheit am Markt",
+        "Geringer Umsatz",
+        "Stabile Marktposition"
+      ],
+      "solution": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was sind Merkmale der Reifephase?",
+      "type": "multi",
+      "answers": [
+        "Markt ist gesaettigt",
+        "Umsatz erreicht Maximum",
+        "Starke Wettbewerbsituation",
+        "Steigende Produktionskosten",
+        "Hohe Gewinnmarge"
+      ],
+      "solution": [
+        1,
+        2
+      ]
+    },
+    {
+      "question": "Was passiert in der Degenerationsphase?",
+      "type": "multi",
+      "answers": [
+        "Umsatz steigt",
+        "Marktanteil waechst",
+        "Produkt wird evtl. vom Markt genommen",
+        "Gewinn sinkt",
+        "Relaunch ist moeglich"
+      ],
+      "solution": [
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was ist das Ziel der Portfolioanalyse (BCG-Matrix)?",
+      "type": "multi",
+      "answers": [
+        "Festlegung von Gehaeltern",
+        "Bewertung von Geschaeftseinheiten",
+        "Strategische Ressourcenverteilung",
+        "Analyse von Kundenfeedback",
+        "Ermittlung von Marktanteilen"
+      ],
+      "solution": [
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "question": "Welche Achsen hat die BCG-Matrix?",
+      "type": "multi",
+      "answers": [
+        "Produktqualitaet und Preis",
+        "Marktanteil",
+        "Marktwachstum",
+        "Umsatz und Gewinn",
+        "Kundenzufriedenheit"
+      ],
+      "solution": [
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Welche Felder gibt es in der BCG-Matrix?",
+      "type": "multi",
+      "answers": [
+        "Question Marks",
+        "Stars",
+        "Cash Cows",
+        "Poor Dogs",
+        "Unicorns"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was kennzeichnet Stars in der BCG-Matrix?",
+      "type": "multi",
+      "answers": [
+        "Hoher Marktanteil",
+        "Geringes Marktwachstum",
+        "Hohes Marktwachstum",
+        "Hohe Investitionen",
+        "Niedrige Bedeutung"
+      ],
+      "solution": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was ist typisch fuer eine Cash Cow?",
+      "type": "multi",
+      "answers": [
+        "Geringes Marktwachstum",
+        "Hoher Marktanteil",
+        "Hohe Investitionen",
+        "Starke Konkurrenz",
+        "Konstante Einnahmen"
+      ],
+      "solution": [
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "question": "Welches der 4 Ps beschreibt die Werbung?",
+      "type": "single",
+      "answers": [
+        "Product",
+        "Price",
+        "Place",
+        "Promotion",
+        "Planning"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Was zaehlt zur Kundenbindung?",
+      "type": "multi",
+      "answers": [
+        "Rabattprogramme",
+        "Kundenkarten",
+        "Social-Media-Kommunikation",
+        "Kuendigungsangebote",
+        "Praemien fuer Weiterempfehlung"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "question": "Was sind Vorteile einer guten Marktanalyse?",
+      "type": "multi",
+      "answers": [
+        "Bessere Kundenansprache",
+        "Fehlende Zielgruppendefinition",
+        "Vermeidung von Fehlinvestitionen",
+        "Strategische Planung",
+        "Sinkende Markenbekanntheit"
+      ],
+      "solution": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Was sind Nachteile mangelnder Marktanalyse?",
+      "type": "multi",
+      "answers": [
+        "Verfehlte Produktentwicklung",
+        "Fehlende Zielgruppenansprache",
+        "Hohe Kundenzufriedenheit",
+        "Sinkende Umsaetze",
+        "Geringerer Wettbewerb"
+      ],
+      "solution": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "question": "Welche dieser Instrumente gehoeren zum operativen Marketing?",
+      "type": "multi",
+      "answers": [
+        "TV-Werbung",
+        "Preissenkung",
+        "Produktauslieferung",
+        "Festlegung der Unternehmensstrategie",
+        "Budgetplanung"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Was gehoert zur Preispolitik?",
+      "type": "multi",
+      "answers": [
+        "Festlegung des Verkaufspreises",
+        "Rabattaktionen",
+        "Finanzierungsmoeglichkeiten",
+        "Werbemassnahmen",
+        "Distributionsbescheide"
+      ],
+      "solution": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "question": "Welche Marktsegmentierung ist am haeufigsten?",
+      "type": "single",
+      "answers": [
+        "Demografische Segmentierung",
+        "Zeitliche Segmentierung",
+        "Geografische Segmentierung",
+        "Psychografische Segmentierung",
+        "Verhaltensorientierte Segmentierung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was gehoert zu den langfristigen Zielen des Marketings?",
+      "type": "multi",
+      "answers": [
+        "Kundenbindung",
+        "Maximierung des kurzfristigen Gewinns",
+        "Marktverdraengung",
+        "Schaffung von Kundenwert",
+        "Steigerung der Markenbekanntheit"
+      ],
+      "solution": [
+        1,
+        4,
+        5
+      ]
+    },
+    {
+      "question": "Was beschreibt eine Marktnische?",
+      "type": "single",
+      "answers": [
+        "Ein Marktsegment mit breitem Angebot",
+        "Ein sehr spezialisiertes Marktsegment",
+        "Eine Segment mit hohem Wettbewerb",
+        "Ein Markt mit Konkurrenz",
+        "Ein Markt fuer Massenprodukte"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Faktoren spielen bei der Preisgestaltung eine Rolle?",
+      "type": "multi",
+      "answers": [
+        "Produktionskosten",
+        "Wettbewerbspreise",
+        "Kundennachfrage",
+        "Marketingziele",
+        "Unternehmensstrategie"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "question": "Welche Faktoren wirken sich auf die Wahl der Distributionskanaele aus?",
+      "type": "multi",
+      "answers": [
+        "Produktkomplexitaet",
+        "Zielgruppe",
+        "Konkurrenzverhalten",
+        "Kosten und Effizienz",
+        "Markenimage"
+      ],
+      "solution": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "question": "Welche Faktoren bestimmen die Produktpolitik?",
+      "type": "multi",
+      "answers": [
+        "Kundenwuensche",
+        "Produktionstechnologien",
+        "Wettbewerbsanalyse",
+        "Marketingbudget",
+        "Marktrends"
+      ],
+      "solution": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "question": "Was ist ein Beduerfnis?",
+      "type": "single",
+      "answers": [
+        "Eine Pflicht, die der Staat auferlegt",
+        "Ein gesetzlich geregelter Anspruch",
+        "Das Empfinden eines Mangels mit dem Wunsch, ihn zu beheben",
+        "Eine notwendige Ausgabe im Haushaltsplan",
+        "Ein staatlich anerkanntes Gut"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was versteht man unter dem oekonomischen Prinzip?",
+      "type": "single",
+      "answers": [
+        "Moeglichst viele Produkte erzeugen",
+        "Verluste in Kauf nehmen",
+        "Mit gegebenen Mitteln den groesstmoeglichen Nutzen erzielen",
+        "So wenig wie moeglich arbeiten",
+        "Preise willkuerlich festlegen"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welches der folgenden Gueter ist ein freies Gut?",
+      "type": "single",
+      "answers": [
+        "Brot",
+        "Trinkwasser aus dem Supermarkt",
+        "Sonnenlicht",
+        "Heizoel",
+        "Strom"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist der Unterschied zwischen Bedarf und Nachfrage?",
+      "type": "single",
+      "answers": [
+        "Bedarf ist gesetzlich geregelt",
+        "Nachfrage ist der Teil des Bedarfs, der am Markt mit Kaufkraft durchgesetzt wird",
+        "Es gibt keinen Unterschied",
+        "Nachfrage kommt nur in der Industrie vor",
+        "Bedarf wird vom Staat gedeckt"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Aussage trifft auf einen Homo Oeconomicus zu?",
+      "type": "single",
+      "answers": [
+        "Er handelt irrational",
+        "Er ignoriert wirtschaftliche Zusammenhaenge",
+        "Er handelt immer rational und nutzenmaximierend",
+        "Er bevorzugt Luxusgueter",
+        "Er hat keine Beduerfnisse"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welches ist kein Produktionsfaktor im volkswirtschaftlichen Sinne?",
+      "type": "single",
+      "answers": [
+        "Arbeit",
+        "Kapital",
+        "Nachfrage",
+        "Boden",
+        "Wissen"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Aussage beschreibt das Minimalprinzip am besten?",
+      "type": "single",
+      "answers": [
+        "Ein gegebenes Ziel mit minimalem Mitteleinsatz erreichen",
+        "Mit moeglichst vielen Mitteln ein Ziel erreichen",
+        "Moeglichst viele Mittel einsetzen",
+        "Das Ziel ignorieren",
+        "Keine Ressourcen verwenden"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Aussage zu Guetern ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Gueter dienen zur Befriedigung von Beduerfnissen",
+        "Gueter sind nur Sachgueter",
+        "Dienstleistungen sind keine Gueter",
+        "Gueter sind unbegrenzt vorhanden",
+        "Nur Investitionsgueter sind wirtschaftlich relevant"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist eine Nachfrage?",
+      "type": "single",
+      "answers": [
+        "Eine Pflicht zum Kauf",
+        "Ein gesetzlich vorgeschriebener Konsum",
+        "Die Summe aller produzierten Gueter",
+        "Der Teil des Bedarfs, der tatsaechlich auf dem Markt realisiert wird",
+        "Ein Wunsch nach einem Gut ohne Kaufabsicht"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Welche Aussage zur freien Marktwirtschaft ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Der Staat greift kaum in den Markt ein",
+        "Der Staat legt alle Preise fest",
+        "Es gibt keine Unternehmer",
+        "Der Staat besitzt die Produktionsmittel",
+        "Es gibt keine freien Preise"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist unter Arbeitsteilung zu verstehen?",
+      "type": "single",
+      "answers": [
+        "Jeder macht alles selbst",
+        "Verschiedene Personen oder Gruppen uebernehmen verschiedene Aufgaben",
+        "Jeder arbeitet fuer sich allein",
+        "Alle arbeiten an derselben Aufgabe gleichzeitig",
+        "Der Staat plant jede Aufgabe"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Rolle spielt der Staat in der sozialen Marktwirtschaft?",
+      "type": "single",
+      "answers": [
+        "Ausgleich sozialer Ungleichheiten",
+        "Planung der Produktion",
+        "Abschaffung von Wettbewerb",
+        "Festlegung aller Preise",
+        "Zwang zur Arbeit"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welcher Faktor zaehlt nicht zu den klassischen Produktionsfaktoren?",
+      "type": "single",
+      "answers": [
+        "Arbeit",
+        "Freizeit",
+        "Kapital",
+        "Boden",
+        "Wissen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was bedeutet das Maximalprinzip?",
+      "type": "single",
+      "answers": [
+        "Mit maximalem Aufwand ein Ziel erreichen",
+        "Mit gegebenen Mitteln den groesstmoeglichen Nutzen erzielen",
+        "Moeglichst viele Ressourcen verbrauchen",
+        "Moeglichst geringe Qualitaet erzeugen",
+        "Ziel ignorieren"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wer gilt nach HGB als Kaufmann?",
+      "type": "single",
+      "answers": [
+        "Wer ein Handelsgewerbe betreibt",
+        "Jeder Selbstaendige",
+        "Jeder, der eine Ausbildung macht",
+        "Nur juristische Personen",
+        "Nur Angestellte im Einzelhandel"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer darf eine Prokura erteilen?",
+      "type": "single",
+      "answers": [
+        "Jeder Mitarbeiter",
+        "Nur der Geschaeftsinhaber oder vertretungsberechtigte Geschaeftsfuehrer",
+        "Der Steuerberater",
+        "Der Betriebsrat",
+        "Die Handelskammer"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Beispiel fuer Gesamtprokura?",
+      "type": "single",
+      "answers": [
+        "Ein Prokurist darf allein handeln",
+        "Mehrere Prokuristen muessen gemeinsam handeln",
+        "Nur beim Auslandsgeschaeft gueltig",
+        "Prokurist darf keine Vertraege unterschreiben",
+        "Nur fuer die Buchhaltung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Geschaefte darf ein Prokurist nicht vornehmen?",
+      "type": "single",
+      "answers": [
+        "Kundenberatung",
+        "Verkauf des Unternehmens",
+        "Einstellung von Personal",
+        "Einkauf von Waren",
+        "Vertragsabschluesse"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was bedeutet Einzelprokura?",
+      "type": "single",
+      "answers": [
+        "Mehrere Prokuristen muessen unterschreiben",
+        "Ein Prokurist kann allein handeln",
+        "Nur fuer ein einzelnes Projekt",
+        "Nur zeitlich begrenzt",
+        "Nur fuer Auslandsgeschaefte"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wer darf Prokura nicht erteilen?",
+      "type": "single",
+      "answers": [
+        "Geschaeftsinhaber",
+        "Einzelkaufmann",
+        "Kommanditist ohne Vertretungsrecht",
+        "Vorstand einer AG",
+        "GmbH-Geschaeftsfuehrer"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was regelt das Handelsgesetzbuch (HGB)?",
+      "type": "single",
+      "answers": [
+        "Schulpflicht",
+        "Rechte und Pflichten von Kaufleuten",
+        "Urlaubsregelungen",
+        "Steuerpflicht",
+        "Datenschutz"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Beduerfnisse muessen laut Maslow zuerst befriedigt werden?",
+      "type": "single",
+      "answers": [
+        "Soziale Beduerfnisse",
+        "Physiologische Beduerfnisse",
+        "Selbstverwirklichung",
+        "Sicherheitsbeduerfnisse",
+        "Individualbeduerfnisse"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was zaehlt zu Individualbeduerfnissen?",
+      "type": "single",
+      "answers": [
+        "Der Wunsch nach einem eigenen Auto",
+        "Der Wunsch nach Frieden",
+        "Sicherheit im Strassenverkehr",
+        "Gesundheitswesen",
+        "Bildung fuer alle"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Konsumgut?",
+      "type": "single",
+      "answers": [
+        "Ein Gut, das zur direkten Beduerfnisbefriedigung dient",
+        "Ein Gut fuer die Produktion anderer Gueter",
+        "Eine Dienstleistung",
+        "Ein Gut, das verschenkt wird",
+        "Ein Handelsgut"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche der folgenden Gueter sind immateriell?",
+      "type": "single",
+      "answers": [
+        "Maschinen",
+        "Haeuser",
+        "Beratungsdienstleistungen",
+        "Fahrzeuge",
+        "Lebensmittel"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist der Zweck der Berufsausbildung?",
+      "type": "single",
+      "answers": [
+        "Beschaeftigung von Jugendlichen",
+        "Erwerb beruflicher Handlungsfaehigkeit",
+        "Erfuellung gesetzlicher Schulpflicht",
+        "Einsparung von Arbeitskraeften",
+        "Vorruhestand der Ausbilder ermoeglichen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Aussage ueber den Ausbildungsvertrag ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Muss handschriftlich erfolgen",
+        "Muss vor Beginn der Ausbildung schriftlich abgeschlossen werden",
+        "Muss vom Betriebsrat unterzeichnet werden",
+        "Kann muendlich geschlossen werden",
+        "Ist nur bei IHK-Ausbildungen noetig"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wer unterschreibt den Ausbildungsvertrag bei minderjaehrigen Azubis?",
+      "type": "single",
+      "answers": [
+        "Nur der Ausbilder",
+        "Nur der Auszubildende",
+        "Der Auszubildende und ein gesetzlicher Vertreter",
+        "Die IHK",
+        "Der Klassenlehrer"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Pflicht hat der Auszubildende?",
+      "type": "single",
+      "answers": [
+        "Lernpflicht",
+        "Kuendigung des Vertrags",
+        "Kuendigungsschutz",
+        "Beschaeftigung von Kollegen",
+        "Urlaubsvertretung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer kontrolliert und genehmigt den Ausbildungsvertrag?",
+      "type": "single",
+      "answers": [
+        "Gewerkschaft",
+        "Bundesagentur fuer Arbeit",
+        "Industrie- und Handelskammer (IHK)",
+        "Krankenkasse",
+        "Finanzamt"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wozu dient das Berichtsheft?",
+      "type": "single",
+      "answers": [
+        "Zur Verwaltung der Urlaubstage",
+        "Zur Dokumentation des Ausbildungsstands",
+        "Fuer den Steuerberater",
+        "Zur Freizeitplanung",
+        "Zur Berechnung des Lohns"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wann muss das Berichtsheft vorgelegt werden?",
+      "type": "single",
+      "answers": [
+        "Nur auf Verlangen des Chefs",
+        "Spaetestens zur Zulassung zur Abschlusspruefung",
+        "Niemals",
+        "Jaehrlich bei der Berufsschule",
+        "Alle 6 Monate an die Agentur fuer Arbeit"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Aussage trifft auf den Ausbildungsplan zu?",
+      "type": "single",
+      "answers": [
+        "Er ist Teil des Ausbildungsvertrags",
+        "Er ist nur in schulischen Ausbildungen noetig",
+        "Er darf nicht geaendert werden",
+        "Er gilt nur fuer Azubis",
+        "Er ist unwichtig"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Pflicht hat der Ausbildende?",
+      "type": "single",
+      "answers": [
+        "Den Azubi mit privaten Aufgaben zu beschaeftigen",
+        "Dafuer zu sorgen, dass das Ausbildungsziel erreicht werden kann",
+        "Nur die Berufsschule zu bezahlen",
+        "Dem Azubi kuendigen",
+        "Keine – alles regelt der Azubi selbst"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Europass?",
+      "type": "single",
+      "answers": [
+        "Ein Reisedokument",
+        "Ein Arbeitsvertrag in der EU",
+        "Eine Sammlung standardisierter Dokumente zum Nachweis von Qualifikationen",
+        "Ein Zeugnis der Berufsschule",
+        "Ein spezieller Schuelerausweis"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wann endet das Berufsausbildungsverhaeltnis spaetestens?",
+      "type": "single",
+      "answers": [
+        "Mit Bestehen der Abschlusspruefung",
+        "Nach 3 Jahren automatisch",
+        "Nach dem 30. Lebensjahr",
+        "Mit Erreichen des Rentenalters",
+        "Mit dem Ende der Berufsschule"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer muss die Ausbildung ueberwachen?",
+      "type": "single",
+      "answers": [
+        "Die Schule",
+        "Die zustaendige Kammer (z. B. IHK)",
+        "Die Familie",
+        "Der Klassenlehrer",
+        "Die Steuerbehoerde"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist ein Pflichtverstoss des Auszubildenden?",
+      "type": "single",
+      "answers": [
+        "Teilnahme am Berufsschulunterricht",
+        "Fuehren des Berichtshefts",
+        "Mehrfaches unentschuldigtes Fehlen",
+        "Absprache mit dem Ausbilder",
+        "Beachtung der Sicherheitsregeln"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wer bestimmt den betrieblichen Ausbildungsplan?",
+      "type": "single",
+      "answers": [
+        "Die Eltern",
+        "Der Ausbildende auf Grundlage der Ausbildungsordnung",
+        "Der Azubi",
+        "Die Schule",
+        "Die Gewerkschaft"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Aussage zur Ausbildungsvergutung ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Sie muss mit jedem Ausbildungsjahr steigen",
+        "Sie ist in ganz Deutschland gleich",
+        "Sie ist gesetzlich festgelegt",
+        "Sie wird von der Schule gezahlt",
+        "Sie muss monatlich wechseln"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Beduerfnis?",
+      "type": "single",
+      "answers": [
+        "Ein kostenloses Gut",
+        "Ein gesetzlich festgelegter Anspruch",
+        "Das Empfinden eines Mangels mit dem Wunsch, ihn zu beheben",
+        "Ein geplanter Konsum",
+        "Ein Angebot der Unternehmen"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was beschreibt die Nachfrage?",
+      "type": "single",
+      "answers": [
+        "Das Angebot auf dem Markt",
+        "Die Werbung eines Produkts",
+        "Die Menge der produzierten Gueter",
+        "Der Teil des Bedarfs, der tatsaechlich auf dem Markt wirksam wird",
+        "Das Lagerverhalten der Kunden"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Was versteht man unter freien Guetern?",
+      "type": "single",
+      "answers": [
+        "Gueter, die in unbegrenzter Menge zur Verfuegung stehen",
+        "Gueter, die vom Staat gefoerdert werden",
+        "Gueter, die ohne Mehrwertsteuer angeboten werden",
+        "Gebrauchsgueter mit Rabatten",
+        "Investitionsgueter"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist das Maximalprinzip?",
+      "type": "single",
+      "answers": [
+        "Moeglichst viele Mitarbeiter beschaeftigen",
+        "Mit gegebenen Mitteln den groesstmoeglichen Erfolg erzielen",
+        "So viele Gueter wie moeglich verbrauchen",
+        "Minimaler Aufwand bei maximalem Verlust",
+        "Hoechstpreis festlegen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welches Gut gehoert zu den Konsumguetern?",
+      "type": "single",
+      "answers": [
+        "Produktionsmaschine",
+        "Fernseher",
+        "Rohöl",
+        "Schraubenzieher in der Werkstatt",
+        "Roboter in der Fertigung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was gehoert in den Ausbildungsvertrag?",
+      "type": "single",
+      "answers": [
+        "Familiendaten des Azubis",
+        "Dauer der Ausbildung",
+        "Berufsschulnoten",
+        "Steuerklasse",
+        "Freizeitinteressen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist das Berichtsheft?",
+      "type": "single",
+      "answers": [
+        "Eine Urlaubsuebersicht",
+        "Ein Vertragsnachweis",
+        "Ein schriftlicher Nachweis ueber Ausbildungsinhalte",
+        "Ein Zeugnis",
+        "Ein Stundenzettel"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist der Europass?",
+      "type": "single",
+      "answers": [
+        "Ein Bahn-Ticket",
+        "Ein standardisiertes Dokument zur Darstellung beruflicher Qualifikationen",
+        "Ein Bonusprogramm",
+        "Ein Reisepass fuer Europa",
+        "Ein Fuehrerschein fuer die EU"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wann endet das Berufsausbildungsverhaeltnis regulaer?",
+      "type": "single",
+      "answers": [
+        "Mit dem 18. Geburtstag",
+        "Nach 3 Jahren",
+        "Mit Bestehen der Abschlusspruefung",
+        "Mit dem Ende des Schuljahres",
+        "Mit Ablauf der Probezeit"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wie oft muss das Berichtsheft gefuehrt werden?",
+      "type": "single",
+      "answers": [
+        "Jaehrlich",
+        "Nur bei Pruefungen",
+        "Regelmaessig, z. B. wochenlich",
+        "Nur im ersten Lehrjahr",
+        "Nur in Blockunterrichtsphasen"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Aussage zur Probezeit ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Sie muss 6 Monate dauern",
+        "Sie darf hoechstens 4 Monate dauern",
+        "Sie kann beliebig verlaengert werden",
+        "Sie gilt nur fuer Erwachsene",
+        "Sie ist im oeffentlichen Dienst ausgeschlossen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wozu dient das oekonomische Prinzip?",
+      "type": "single",
+      "answers": [
+        "Ressourcen moeglichst effizient einzusetzen",
+        "Arbeitslosigkeit zu erhoehen",
+        "Produktion zu verringern",
+        "Beduerfnisse zu ignorieren",
+        "Nachfrage zu begrenzen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Kollektivbeduerfnis?",
+      "type": "single",
+      "answers": [
+        "Wunsch nach einer Uhr",
+        "Wunsch nach Strassenbeleuchtung",
+        "Wunsch nach einem Computer",
+        "Wunsch nach mehr Geld",
+        "Wunsch nach Schokolade"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Form der Mitbestimmung betrifft Jugendliche im Betrieb?",
+      "type": "single",
+      "answers": [
+        "Steuerberatung",
+        "Aufsichtsrat",
+        "Jugend- und Auszubildendenvertretung (JAV)",
+        "Gesellschafterversammlung",
+        "Kundenrat"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was passiert, wenn ein Azubi sein Berichtsheft nicht fuehrt?",
+      "type": "single",
+      "answers": [
+        "Er bekommt Urlaub",
+        "Er kann nicht zur Abschlusspruefung zugelassen werden",
+        "Er bekommt eine Belohnung",
+        "Es hat keine Folgen",
+        "Die IHK uebernimmt die Fuehrung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was unterscheidet ein Einzelunternehmen von einer GmbH?",
+      "type": "single",
+      "answers": [
+        "Einzelunternehmen haben mehr Rechte",
+        "GmbHs duerfen keine Angestellten haben",
+        "GmbHs haften persoenlich",
+        "Einzelunternehmer haften mit ihrem Privatvermoegen",
+        "GmbHs brauchen keine Buchfuehrung"
+      ],
+      "solution": 4
+    },
+    {
+      "question": "Welche der folgenden ist eine Personengesellschaft?",
+      "type": "single",
+      "answers": [
+        "AG",
+        "GmbH",
+        "OHG",
+        "KGaA",
+        "GmbH & Co. KG"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist ein typisches Merkmal einer Kapitalgesellschaft?",
+      "type": "single",
+      "answers": [
+        "Persoenliche Haftung der Gesellschafter",
+        "Keine Buchfuehrungspflicht",
+        "Eigenstaendige juristische Person",
+        "Nur mit Handelskammer-Zulassung moeglich",
+        "Immer staatlich gefoerdert"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Was ist ein Vorteil der GmbH gegenueber einer GbR?",
+      "type": "single",
+      "answers": [
+        "Haftungsbeschraenkung",
+        "Keine Gruendungskosten",
+        "Schnellere Entscheidungen",
+        "Weniger Buerokratie",
+        "Keine Steuerpflicht"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wie haften Kommanditisten in einer KG?",
+      "type": "single",
+      "answers": [
+        "Persoenlich und unbeschraenkt",
+        "Nur mit ihrer Einlage",
+        "Wie ein Prokurist",
+        "Ueber den Gesellschaftsvertrag hinaus",
+        "Mit dem gesamten Firmenvermoegen"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Kriterien sind bei der Wahl der Unternehmensform wichtig?",
+      "type": "single",
+      "answers": [
+        "Lieblingsfarbe des Gruenders",
+        "Anzahl der Mitarbeitenden",
+        "Haftung, Kapitalbedarf, steuerliche Aspekte",
+        "Nur persoenliche Vorlieben",
+        "Der Standort der Berufsschule"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wie oft muss ein Azubi die Berufsschule besuchen?",
+      "type": "single",
+      "answers": [
+        "Nach dem fuer ihn geltenden Block- oder Teilzeitmodell",
+        "Nur auf Wunsch des Ausbildenden",
+        "Nur bei Pruefungen",
+        "Einmal im Monat",
+        "Nur im 1. Lehrjahr"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer ist zur Fuehrung des Berichtshefts verpflichtet?",
+      "type": "single",
+      "answers": [
+        "Der Auszubildende",
+        "Der Ausbilder",
+        "Die IHK",
+        "Der Betriebsrat",
+        "Die Berufsschule"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Rechte haben Jugendliche in der Jugend- und Auszubildendenvertretung (JAV)?",
+      "type": "single",
+      "answers": [
+        "Vertretung der Interessen jugendlicher Arbeitnehmer",
+        "Personalentscheidungen treffen",
+        "Kuendigungen aussprechen",
+        "Loehne festlegen",
+        "Dienstanweisungen erteilen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer darf gewaehlt werden in die JAV?",
+      "type": "single",
+      "answers": [
+        "Nur volljaehrige Auszubildende",
+        "Beschaeftigte unter 25 Jahren",
+        "Nur Meister",
+        "Nur Schulabgaenger",
+        "Alle Beschaeftigten"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was gehoert NICHT in den Ausbildungsvertrag?",
+      "type": "single",
+      "answers": [
+        "Beginn und Dauer der Ausbildung",
+        "Religionszugehoerigkeit des Azubis",
+        "Ausbildungsverguetung",
+        "Urlaubsdauer",
+        "Probezeit"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wer ist Ansprechpartner bei Problemen in der Ausbildung?",
+      "type": "single",
+      "answers": [
+        "Der Ausbilder oder die IHK",
+        "Der Buergermeister",
+        "Die Finanzbehoerde",
+        "Die Kunden",
+        "Die IT-Abteilung"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Pflicht hat der Auszubildende gegenueber dem Ausbildungsbetrieb?",
+      "type": "single",
+      "answers": [
+        "Kuendigungsschutz beantragen",
+        "Weisungen befolgen",
+        "Urlaubszeiten festlegen",
+        "Kollegen bewerten",
+        "Lehrer kontrollieren"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was passiert, wenn das Berichtsheft nicht vorliegt?",
+      "type": "single",
+      "answers": [
+        "Man wird befoerdert",
+        "Man kann nicht zur Abschlusspruefung zugelassen werden",
+        "Es gibt einen Bonus",
+        "Es wird automatisch erstellt",
+        "Es wird ignoriert"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wie oft darf ein Azubi krank sein, ohne das Berichtsheft zu fuehren?",
+      "type": "single",
+      "answers": [
+        "1 Monat",
+        "Nie – das Berichtsheft muss regelmaessig gefuehrt werden",
+        "3 Monate",
+        "Nur in den Ferien",
+        "Bei aerztlicher Erlaubnis"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist KEINE Pflicht des Ausbildenden?",
+      "type": "single",
+      "answers": [
+        "Persoenliche Steuererklaerung des Azubis abgeben",
+        "Ausbildung ordnungsgemaess durchfuehren",
+        "Berichtsheft kontrollieren",
+        "Berufsschule ermoeglichen",
+        "Fuersorgepflicht erfuellen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was zaehlt nicht zu den klassischen Produktionsfaktoren?",
+      "type": "single",
+      "answers": [
+        "Arbeit",
+        "Werbung",
+        "Kapital",
+        "Boden",
+        "Bildung"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Was ist das Ziel der sozialen Marktwirtschaft?",
+      "type": "single",
+      "answers": [
+        "Vollstaendige Planwirtschaft",
+        "Kombination von Freiheit und sozialem Ausgleich",
+        "Maximale Staatskontrolle",
+        "Einheitspreise",
+        "Produktionszwang"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Wer ist nach dem HGB ein Kaufmann?",
+      "type": "single",
+      "answers": [
+        "Jeder Arbeitnehmer",
+        "Jeder, der online verkauft",
+        "Wer ein Handelsgewerbe betreibt",
+        "Nur Beamte",
+        "Nur GmbHs"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Pflicht hat der Ausbildende?",
+      "type": "single",
+      "answers": [
+        "Dem Azubi private Aufgaben uebertragen",
+        "Den Azubi in Freizeitangelegenheiten beraten",
+        "Dafuer sorgen, dass der Ausbildungszweck erreicht werden kann",
+        "Den Azubi entlohnen wie eine Fachkraft",
+        "Schulnoten des Azubis beeinflussen"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Welche Pflicht hat der Auszubildende?",
+      "type": "single",
+      "answers": [
+        "Weisungen befolgen",
+        "Urlaub selbstaendig planen",
+        "Ausbildungsinhalte frei waehlen",
+        "Die Berufsschule nur besuchen, wenn es passt",
+        "Pruefungen umgehen"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Welche Aussage zum Ausbildungsplan ist richtig?",
+      "type": "single",
+      "answers": [
+        "Er legt fest, wann und was im Betrieb gelernt werden soll",
+        "Er ist eine Empfehlung der Berufsschule",
+        "Er gilt nur bei arbeitlichen Lehrgaengen",
+        "Er wird vom Azubi geschrieben",
+        "Er ersetzt das Berichtsheft"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Wer darf eine JAV waehlen?",
+      "type": "single",
+      "answers": [
+        "Nur Erwachsene",
+        "Nur der Betriebsrat",
+        "Beschaeftigte unter 18 Jahren und Azubis unter 25 Jahren",
+        "Nur Ausbilder",
+        "Nur Berufsschullehrer"
+      ],
+      "solution": 3
+    },
+    {
+      "question": "Wer ist zur Kontrolle der Berufsausbildung zustaendig?",
+      "type": "single",
+      "answers": [
+        "Die zustaendige Kammer (z. B. IHK)",
+        "Das Finanzamt",
+        "Die Krankenkasse",
+        "Der Betriebsrat",
+        "Das Amtsgericht"
+      ],
+      "solution": 1
+    },
+    {
+      "question": "Was ist ein Individualbeduerfnis?",
+      "type": "single",
+      "answers": [
+        "Beduerfnis der Allgemeinheit",
+        "Wunsch nach einem eigenen Laptop",
+        "Wunsch nach sauberem Trinkwasser",
+        "Strassenbeleuchtung",
+        "Sicherheit durch Polizei"
+      ],
+      "solution": 2
+    },
+    {
+      "question": "Welche Aussage zur Berufsschule ist korrekt?",
+      "type": "single",
+      "answers": [
+        "Sie ist freiwillig",
+        "Sie ergaenzt die betriebliche Ausbildung",
+        "Sie ersetzt die Praxis im Betrieb",
+        "Sie dauert 8 Stunden taeglich",
+        "Sie kann nur digital absolviert werden"
+      ],
+      "solution": 2
+    }
+  ]
+};
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
