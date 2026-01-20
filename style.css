@@ -199,7 +199,7 @@
     }
 
     .btn.primary {
-      background: var(--indigo);
+      /* background: var(--indigo); */
       color: #fff;
       box-shadow: var(--shadow);
     }
@@ -336,12 +336,12 @@
       font-size: 16px;
     }
 
-    .heroCtas {
+    /* .heroCtas {
       display: flex;
       gap: 12px;
       margin-top: 22px;
       flex-wrap: wrap;
-    }
+    } */
 
     .heroBullets {
       margin-top: 18px;
@@ -383,7 +383,7 @@
     }
 
     .panelTitle {
-      font-weight: 900;
+      font-weight: 400;
       font-size: 14px;
     }
 
@@ -399,7 +399,7 @@
       background: rgba(52, 211, 153, .10);
       color: rgba(167, 243, 208, .95);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 400;
       white-space: nowrap;
     }
 
@@ -433,7 +433,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-weight: 900;
+      font-weight: 400;
       font-size: 14px;
     }
 
@@ -851,6 +851,7 @@
       flex-wrap: wrap;
       color: rgba(148, 163, 184, .95);
       font-size: 14px;
+      align-items: center;
     }
 
     .footLinks a:hover {
