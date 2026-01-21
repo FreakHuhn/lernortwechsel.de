@@ -161,7 +161,7 @@
         </div>
 
         <div class="cards3">
-          <article class="service">
+          <article class="service" data-modal="modalServer">
             <div class="serviceTop">
               <div class="iconBox indigo"><i data-lucide="server"></i></div>
               <span class="tag">Infrastruktur</span>
@@ -175,7 +175,7 @@
             </ul>
           </article>
 
-          <article class="service">
+          <article class="service" data-modal="modalNetwork">
             <div class="serviceTop">
               <div class="iconBox cyan"><i data-lucide="network"></i></div>
               <span class="tag">Connectivity</span>
@@ -189,7 +189,7 @@
             </ul>
           </article>
 
-          <article class="service">
+          <article class="service" data-modal="modalSecurity">
             <div class="serviceTop">
               <div class="iconBox emerald"><i data-lucide="shield"></i></div>
               <span class="tag">Schutz</span>
@@ -377,6 +377,194 @@
   </footer>
 
   <div id="toast"></div>
+
+  <!-- SERVER MODAL -->
+<div class="modalOverlay" id="modalServer" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modalBox" role="document" tabindex="-1">
+    <button class="modalClose" type="button" aria-label="Schließen" data-close>×</button>
+
+    <div class="modalHeader">
+      <div>
+        <h3 class="modalTitle">Server & Infrastruktur</h3>
+        <p class="modalSub">
+          Planung, Aufbau und Betrieb stabiler Server-Umgebungen – On-Prem, virtualisiert oder hybrid.
+          Fokus auf Wartbarkeit, Performance und saubere Betriebsprozesse.
+        </p>
+      </div>
+      <span class="tag">Infrastruktur</span>
+    </div>
+
+    <div class="modalGrid">
+      <div class="modalCard">
+        <h4>Typische Maßnahmen</h4>
+        <ul class="modalList">
+          <li>Virtualisierung / Konsolidierung (z.B. Hyper-V/VMware)</li>
+          <li>Storage & Performance (IOPS, Tiering, Kapazitätsplanung)</li>
+          <li>Backup-Strategien (3-2-1), Restore-Tests & Notfallabläufe</li>
+          <li>Patch- & Lifecycle-Management (OS, Firmware, Hypervisor)</li>
+          <li>Monitoring & Alerting (Health, Kapazität, Services)</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>Ergebnisse / Nutzen</h4>
+        <ul class="modalList">
+          <li>Weniger Ausfälle durch saubere Redundanz & Wartungsfenster</li>
+          <li>Schnellere Recovery durch getestete Restore-Prozesse</li>
+          <li>Mehr Transparenz (Dashboards, Warnungen, Dokumentation)</li>
+          <li>Kalkulierbare Kosten durch Lifecycle & Standardisierung</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>Optional: Modernisierung</h4>
+        <p>
+          Schrittweise Migration von Legacy-Systemen, Bereinigung von Altlasten,
+          und Aufbau einer “sauberen Basis” für Wachstum.
+        </p>
+      </div>
+
+      <div class="modalCard">
+        <h4>Lieferobjekte</h4>
+        <ul class="modalList">
+          <li>Konzept + Architektur-Skizze</li>
+          <li>Dokumentation (Zugänge, Abläufe, Wiederherstellung)</li>
+          <li>Monitoring/Backup-Reports</li>
+          <li>Empfehlungen für Lifecycle & nächste Schritte</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modalFooter">
+      <a class="btn primary" href="#kontakt" data-close>Jetzt Beratung anfragen</a>
+      <span class="modalHint">ESC zum Schließen · Klick auf den Hintergrund schließt ebenfalls</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- NETZWERK MODAL -->
+<div class="modalOverlay" id="modalNetwork" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modalBox" role="document" tabindex="-1">
+    <button class="modalClose" type="button" aria-label="Schließen" data-close>×</button>
+
+    <div class="modalHeader">
+      <div>
+        <h3 class="modalTitle">Netzwerk & Connectivity</h3>
+        <p class="modalSub">
+          Stabile LAN/WLAN-Architekturen mit Segmentierung, Priorisierung und sauberem Betrieb –
+          damit Teams produktiv bleiben und Störungen schnell behoben werden.
+        </p>
+      </div>
+      <span class="tag">Connectivity</span>
+    </div>
+
+    <div class="modalGrid">
+      <div class="modalCard">
+        <h4>WLAN / Funk</h4>
+        <ul class="modalList">
+          <li>WLAN-Ausleuchtung, Kanal-/Sendeleistungs-Tuning</li>
+          <li>Roaming, SSID-Design, Gastnetz & Captive Portal</li>
+          <li>Störquellenanalyse (Interferenzen, dichte Umgebungen)</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>LAN / Segmentierung</h4>
+        <ul class="modalList">
+          <li>VLANs, Routing, DHCP/DNS-Design</li>
+          <li>QoS für VoIP/Video/Business-Apps</li>
+          <li>Redundanz (Uplinks, STP/MLAG je nach Stack)</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>Standortvernetzung</h4>
+        <ul class="modalList">
+          <li>Site-to-Site VPN, SD-WAN-Ansätze (wenn sinnvoll)</li>
+          <li>Provider-Anbindung, Failover, SLA-orientierte Planung</li>
+          <li>Saubere Übergaben / Demarkationspunkte</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>Monitoring & Troubleshooting</h4>
+        <ul class="modalList">
+          <li>Uptime, Latenz, Paketverlust, Bandbreite</li>
+          <li>Log-/Event-Auswertung & Ursachenanalyse</li>
+          <li>Dokumentation (Ports, VLANs, IP-Plan)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modalFooter">
+      <a class="btn primary" href="#kontakt" data-close>Jetzt Beratung anfragen</a>
+      <span class="modalHint">ESC zum Schließen · Klick auf den Hintergrund schließt ebenfalls</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- SECURITY MODAL -->
+<div class="modalOverlay" id="modalSecurity" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modalBox" role="document" tabindex="-1">
+    <button class="modalClose" type="button" aria-label="Schließen" data-close>×</button>
+
+    <div class="modalHeader">
+      <div>
+        <h3 class="modalTitle">IT-Security</h3>
+        <p class="modalSub">
+          Mehrschichtige Sicherheitskonzepte – pragmatisch, verständlich und umsetzbar:
+          von Identitäten (MFA) über Mail/Endpoint bis Firewall & Richtlinien.
+        </p>
+      </div>
+      <span class="tag">Schutz</span>
+    </div>
+
+    <div class="modalGrid">
+      <div class="modalCard">
+        <h4>Perimeter & Zugriff</h4>
+        <ul class="modalList">
+          <li>Firewall, Regeln, Segmentierung & Logging</li>
+          <li>VPN / Remote Access, saubere Rollen & Berechtigungen</li>
+          <li>Zero-Trust-Bausteine (Least Privilege, Gerätestatus, MFA)</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>Identity & Policies</h4>
+        <ul class="modalList">
+          <li>MFA, Conditional Access, Admin-Härtung</li>
+          <li>Richtlinien (Passwörter, Geräte, Updates, Zugriff)</li>
+          <li>Dokumentierte Prozesse für Join/Move/Leave</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>E-Mail & Endpoint</h4>
+        <ul class="modalList">
+          <li>Mail-Security, Phishing-Schutz, SPF/DKIM/DMARC (falls passend)</li>
+          <li>Endpoint-Absicherung, Hardening, Update-Stand</li>
+          <li>Awareness: kurze, wirksame Maßnahmen statt “Schulungstheater”</li>
+        </ul>
+      </div>
+
+      <div class="modalCard">
+        <h4>Notfall & Resilienz</h4>
+        <ul class="modalList">
+          <li>Backup-Schutz (Immutable/Offline-Strategien, Restore-Tests)</li>
+          <li>Incident-Checkliste: Wer macht was, wann?</li>
+          <li>Prioritäten: kritische Systeme & Wiederanlaufzeiten</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modalFooter">
+      <a class="btn primary" href="#kontakt" data-close>Jetzt Beratung anfragen</a>
+      <span class="modalHint">ESC zum Schließen · Klick auf den Hintergrund schließt ebenfalls</span>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

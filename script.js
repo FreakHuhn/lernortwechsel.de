@@ -69,4 +69,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+      // Modals
+
+      let activeModalId = null;
+
+function openModal(id){
+  const overlay = document.getElementById(id);
+  if(!overlay) return;
+
+  // Close any open modal first
+  if(activeModalId) closeModal(activeModalId);
+
+  activeModalId = id;
+  overlay.classList.add("is-open");
+  overlay.setAttribute("aria-hidden", "false");
+
+  // Focus the modal box for accessibility / ESC feeling
+  const box = overlay.querySelector(".modalBox");
+  if(box) box.focus();
+
+  // Optional: Body scroll lock
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(id){
+  const overlay = document.getElementById(id);
+  if(!overlay) return;
+
+  overlay.classList.remove("is-open");
+  overlay.setAttribute("aria-hidden", "true");
+
+  activeModalId = null;
+  document.body.style.overflow = "";
+}
+
+// Click on cards -> open matching modal
+document.querySelectorAll(".service").forEach(card => {
+  card.style.cursor = "pointer";
+  card.addEventListener("click", () => {
+    const modalId = card.getAttribute("data-modal");
+    openModal(modalId);
+  });
+});
+
+// Click on overlay background -> close
+document.querySelectorAll(".modalOverlay").forEach(overlay => {
+  overlay.addEventListener("click", (e) => {
+    if(e.target === overlay){
+      closeModal(overlay.id);
+    }
+  });
+
+  // Any element with data-close closes modal (X button, CTA button, etc.)
+  overlay.querySelectorAll("[data-close]").forEach(btn => {
+    btn.addEventListener("click", () => closeModal(overlay.id));
+  });
+});
+
+// ESC closes currently open modal
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape" && activeModalId){
+    closeModal(activeModalId);
+  }
+});
+
 });
