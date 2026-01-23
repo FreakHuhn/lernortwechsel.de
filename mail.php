@@ -1,4 +1,6 @@
-<?php
+<?
+
+header('Content-Type: text/html; charset=utf-8');
 
 require 'src/PHPMailer.php';
 require 'src/SMTP.php';
