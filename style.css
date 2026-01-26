@@ -1103,6 +1103,19 @@
   font-size: 12px;
 }
 
+.service img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid var(--border);
+    opacity: 0.9;
+    filter: brightness(0.8) contrast(1.1); /* Passt das Bild an das Dark-Theme an */
+    transition: opacity 0.3s ease;
+}
+
+.service img:hover {
+    opacity: 1;
+}
+
 @media (max-width: 860px){
   .modalGrid{ grid-template-columns: 1fr; }
 }
