@@ -1,6 +1,4 @@
-<?
-
-header('Content-Type: text/html; charset=utf-8');
+<?php
 
 require 'src/PHPMailer.php';
 require 'src/SMTP.php';
@@ -25,14 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         $mail->isSMTP();
-        $mail->Host = 'mail.lernortwechsel.de';
+        $mail->Host = '127.0.0.1';
         $mail->SMTPAuth = true;
         $mail->Username = 'kontakt@lernortwechsel.de';
         $mail->Password = 'abc123';
-        $mail->SMTPSecure = 'tls';
+        $mail->SMTPSecure = PHPMAILER::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
         $mail->CharSet = 'UTF-8';
+	$mail->SMTPOptions = array(
+		'ssl' => array(
+			'verify_peer' => false,
+			'verify_peer_name' => false,
+			'allow_self_signed' => true
+		)
+	);
 
         // WICHTIG: Absender sollte zur SMTP-Anmeldung passen (sonst wird oft geblockt)
         $mail->setFrom('kontakt@lernortwechsel.de', 'Webformular');
