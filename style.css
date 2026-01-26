@@ -1108,7 +1108,7 @@
 #scrollArrow {
   position: fixed;
   top: 20px;
-  left: 50%;
+  right: 0%;
   transform: translateX(-50%);
   cursor: pointer;
   z-index: 1000;
@@ -1122,10 +1122,10 @@
 }
 
 #scrollUpArrow {
-  position: fixed;         /* immer sichtbar */
-  left: 50%;               /* horizontal zentriert */
-  bottom: 20px;            /* Abstand vom unteren Rand */
-  transform: translateX(-50%); /* exakt zentrieren */
+  position: fixed;       
+  right: 0%;              
+  bottom: 20px;           
+  transform: translateX(-50%);
   cursor: pointer;
   z-index: 1000;
   animation: bounce 1.5s infinite;
