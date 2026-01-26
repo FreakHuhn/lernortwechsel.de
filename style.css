@@ -394,17 +394,6 @@
       font-size: 12px;
     }
 
-    .pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(52, 211, 153, .25);
-      background: rgba(52, 211, 153, .10);
-      color: rgba(167, 243, 208, .95);
-      font-size: 12px;
-      font-weight: 400;
-      white-space: nowrap;
-    }
-
     .panelGrid {
       margin-top: 14px;
       display: grid;
@@ -1114,6 +1103,49 @@
 
 .service img:hover {
     opacity: 1;
+}
+
+#scrollArrow {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 1000;
+  animation: bounce 1.5s infinite;
+}
+
+#scrollArrow svg {
+  width: 36px;
+  height: 36px;
+  stroke-width: 2.5;
+}
+
+#scrollUpArrow {
+  position: fixed;         /* immer sichtbar */
+  left: 50%;               /* horizontal zentriert */
+  bottom: 20px;            /* Abstand vom unteren Rand */
+  transform: translateX(-50%); /* exakt zentrieren */
+  cursor: pointer;
+  z-index: 1000;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -10px); }
+}
+
+#scrollUpArrow svg {
+  width: 36px;
+  height: 36px;
+  stroke-width: 2.5;
+}
+
+
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 10px); }
 }
 
 @media (max-width: 860px){

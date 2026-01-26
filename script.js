@@ -133,4 +133,47 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+const scrollArrow = document.getElementById("scrollArrow");
+let scrollAnimationId = null;
+const speed = 5; // Pixel pro Frame, anpassen für langsam/schnell
+
+scrollArrow?.addEventListener("click", () => {
+  cancelAnimationFrame(scrollAnimationId); // alte Animation abbrechen
+  scrollDown();
+});
+
+function scrollDown() {
+  const maxScroll = document.body.scrollHeight;
+
+  function step() {
+    const current = window.scrollY;
+
+    if (current < maxScroll) {
+      // Runterscrollen
+      window.scrollTo(0, Math.min(current + speed, maxScroll));
+      scrollAnimationId = requestAnimationFrame(step);
+    } else {
+      scrollAnimationId = null; // Fertig
+    }
+  }
+
+  scrollAnimationId = requestAnimationFrame(step);
+}
+
+// Manuelles Scrollen → Animation abbrechen
+['wheel','touchstart','keydown'].forEach(evt =>
+  window.addEventListener(evt, () => cancelAnimationFrame(scrollAnimationId))
+);
+
+const scrollUpArrow = document.getElementById("scrollUpArrow");
+
+scrollUpArrow?.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth" // garantiert sanft nach oben
+  });
+});
+
+
+
 });
