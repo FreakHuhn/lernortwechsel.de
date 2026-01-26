@@ -316,43 +316,60 @@
               </p>
             </div>
 
-            <form action="/mail.php" method="POST">
+            <form action="mail.php" method="POST" target="hidden_iframe" id="contactForm" onsubmit="showMessage()">
               <div class="formGrid">
                 <div>
                   <label for="name">Name</label>
-                  <input id="name" name="name" required type="text" placeholder="Max Mustermann" />
+                  <input name="name" required type="text" placeholder="Max Mustermann" />
                 </div>
-
                 <div>
                   <label for="email">E-Mail</label>
-                  <input id="email" name="email" required type="email" placeholder="max@firma.de" />
+                  <input name="email" required type="email" placeholder="max@firma.de" />
                 </div>
-
                 <div class="full">
                   <label for="topic">Thema</label>
-                  <select id="topic" name="topic" required>
+                  <select name="topic" required>
                     <option value="" disabled selected>Thema auswählen</option>
-                    <option value="Server / Virtualisierung">Server / Virtualisierung</option>
-                    <option value="Netzwerk / WLAN">Netzwerk / WLAN</option>
-                    <option value="Security / Backup">Security / Backup</option>
-                    <option value="Managed Services">Managed Services</option>
+                    <option value="Server">Server / Virtualisierung</option>
+                    <option value="Netzwerk">Netzwerk / WLAN</option>
+                    <option value="Security">Security / Backup</option>
+                    <option value="Managed">Managed Services</option>
                     <option value="Sonstiges">Sonstiges</option>
                   </select>
                 </div>
-
                 <div class="full">
                   <label for="nachricht">Nachricht</label>
-                  <textarea id="nachricht" name="nachricht" required
-                    placeholder="Kurze Beschreibung Ihrer Anforderungen..."></textarea>
+                  <textarea name="nachricht" required placeholder="Nachricht..."></textarea>
                 </div>
               </div>
 
               <div class="formBottom">
-                <button class="btn primary" type="submit">
-                  <i data-lucide="send"></i> Anfrage senden
-                </button>
+                <button class="btn primary" type="submit">Anfrage senden</button>
               </div>
             </form>
+
+            <div id="msg" style="display:none; color: green; font-weight: bold; margin-top: 15px;">
+              ✔ Nachricht gesendet!
+            </div>
+
+            <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+            <script>
+              function showMessage() {
+                const msg = document.getElementById('msg');
+                msg.style.display = 'block'; // Meldung zeigen
+
+                // Nach 5 Sekunden ausblenden
+                setTimeout(() => {
+                  msg.style.display = 'none';
+                }, 5000);
+
+                // Formular nach kurzem Moment leeren
+                setTimeout(() => {
+                  document.getElementById('contactForm').reset();
+                }, 100);
+              }
+            </script>
           </div>
         </div>
       </div>
